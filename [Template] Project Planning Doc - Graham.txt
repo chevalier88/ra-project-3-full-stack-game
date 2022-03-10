@@ -1,0 +1,29 @@
+﻿[Template] Rocket Bootcamp Project Planning Doc: 
+What problem are you solving?
+Customers cannot buy coffee from their phones or computers
+How are you solving it?
+App that allows customers to buy coffee and coffee shops to make the coffee
+Who are the users and other stakeholders?
+Coffee drinkers that don’t have much time, coffee shops that can afford to invest in tech.
+What are the user stories?
+1. Customer orders coffee on phone, picks up coffee at store within X minutes
+2. Store receives coffee order, makes coffee within X minutes
+UX Wireframes
+1. Customer app: https://github.com/jokatty/rocket-tea-frontend-app-users#-wire-frame-mvp
+2. Store app: https://github.com/eddiejpot/rocket-tea-frontend-app-stores#-wire-frame-mvp
+Database ERD
+1. Customer app: https://github.com/jokatty/rocket-tea-frontend-app-users#-erd
+2. Store app: https://github.com/eddiejpot/rocket-tea-frontend-app-stores#-erd
+Technologies
+1. Express.js
+2. PostgreSQL
+3. React
+4. Socket.io
+5. Heroku
+6. Netlify (deploy backend and frontend apps on different providers to prevent CORS issues)
+Project Timeline
+1. Days 1-2: Set up backend, experiment with real-time database systems
+2. Days 3-4: Build coffee ordering feature
+3. Days 5-6: Add time estimate to coffee order for both customer and store
+4. Days 7-8: Bonus: Add store map so customers can choose which store to order from
+5. Days 9-10: Polish, deploy
