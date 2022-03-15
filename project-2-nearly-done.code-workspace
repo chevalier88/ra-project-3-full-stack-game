@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": "../../my_algos/deribit-backtester-ws-server"
+    },
+    {
+      "path": "../../my_algos/config_py_files"
+    },
+    {
+      "path": "../week-22"
+    }
+  ],
+  "settings": {}
+}
