@@ -7,4 +7,6 @@ export default function bindRoutes(app) {
   const PlayersController = initPlayersController(db);
   // special JS page. Include the webpack index.html file
   app.get('/', PlayersController.root);
+  // post new or existing Player Name
+  app.post('/login', PlayersController.login);
 }

@@ -7,9 +7,9 @@ export default function initPlayersController(db) {
     try {
       console.log(req.body);
 
-      const [playerData, created] = await db.User.findOrCreate({
+      const [playerData, created] = await db.Player.findOrCreate({
         where: {
-          player: req.body.player,
+          name: req.body.name,
         },
         defaults: {
         },
