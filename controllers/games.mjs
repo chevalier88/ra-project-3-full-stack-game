@@ -48,28 +48,6 @@ const makeDeck = function () {
 
   const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
 
-  let suitIndex = 0;
-  while (suitIndex < suits.length) {
-    // make a variable of the current suit
-    const currentSuit = suits[suitIndex];
-
-    // loop to create all cards in this suit
-    // rank 1-13
-    let rankCounter = 1;
-    while (rankCounter <= 13) {
-      let cardName = rankCounter;
-
-      // 1, 11, 12 ,13
-      if (cardName === 1) {
-        cardName = 'ace';
-      } else if (cardName === 11) {
-        cardName = 'jack';
-      } else if (cardName === 12) {
-        cardName = 'queen';
-      } else if (cardName === 13) {
-        cardName = 'king';
-      }
-
       // make a single card object variable
       const card = {
         name: cardName,
