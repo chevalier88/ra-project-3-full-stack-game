@@ -1,3 +1,4 @@
-import read from 'helperFunctions.mjs';
+import { read } from './helperFunctions.mjs';
 
-read('cah-cards-compact.json');
+const CAHCards = await read('./cah-cards-compact.json');
+console.log(CAHCards)
