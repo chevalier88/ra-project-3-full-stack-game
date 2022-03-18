@@ -13,6 +13,13 @@ playerNameDiv.appendChild(playerNameLabel);
 const playerNameInput = document.createElement('input');
 playerNameInput.setAttribute('id', 'player');
 playerNameDiv.appendChild(playerNameInput);
-infoContainer.appendChild(playerNameDiv);
+
+// start game button
+const startGameButton = document.createElement('button');
+startGameButton.setAttribute('type', 'submit');
+startGameButton.setAttribute('for', 'player');
+startGameButton.textContent = 'START/ JOIN GAME';
+
+playerNameDiv.appendChild(startGameButton);
 
 infoContainer.appendChild(playerNameDiv);
