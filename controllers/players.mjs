@@ -1,8 +1,4 @@
 export default function initPlayersController(db) {
-  const root = (req, res) => {
-    res.render('main');
-  };
-
   const login = async (req, res) => {
     try {
       console.log(req.body);
@@ -34,5 +30,5 @@ export default function initPlayersController(db) {
       res.send(error);
     }
   };
-  return { root, login };
+  return { login };
 }
