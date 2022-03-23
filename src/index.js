@@ -1,4 +1,4 @@
-// import labelInputMaker from '../helperFunctions';
+import { createGame } from './helperFunctions.js';
 
 const infoContainer = document.querySelector('#info-container');
 
@@ -48,9 +48,6 @@ enterPlayerButton.addEventListener('click', () => {
       container.appendChild(loggedInDiv);
 
       // temporary createGame placeholder function
-      function createGame() {
-        console.log('pretending game got created');
-      }
 
       // manipulate DOM, set up create game button
       // create game btn

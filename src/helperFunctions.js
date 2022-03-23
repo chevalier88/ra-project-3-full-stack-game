@@ -1,5 +1,6 @@
 // We omit the write function above here for brevity.
-import { readFile } from 'fs';
+import { readFileSync } from 'fs';
+import { parse } from 'path';
 
 // builds a button element
 // export function buttonMaker(buttonName, eventListenerCallback, buttonIDString, innerTextString, parentToAppend) {
@@ -21,11 +22,9 @@ import { readFile } from 'fs';
 //   parentToAppend.appendChild(inputConstName);
 // }
 
-/**
- * Read and log the contents of the target JSON file
- * @param {string} filename - The name of the target JSON file
- * @returns undefined
- */
-export const read = async (filename) => {
-  const fileObject = await readFile(filename, 'utf-8');
-};
+export function createGame() {
+  console.log('pretending game got created');
+  const rawCardsJson = readFileSync('cah-cards-base.json');
+  const parsedCardsJson = JSON.parse(rawCardsJson);
+  console.log(parsedCardsJson);
+}
