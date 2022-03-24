@@ -12,7 +12,12 @@ export default function createGame() {
   ).then(({ default: cardsData }) => {
   // do whatever you like with your "jsonMenu" variable
     console.log('cardsData: ', cardsData);
-    return cardsData;
+    const container = document.querySelector('#game-container');
+    const findCreateGameButton = document.querySelector('#start-game-button');
+    findCreateGameButton.remove();
+    const cardsDataDiv = document.createElement('div');
+    cardsDataDiv.innerHTML = cardsData.white[0];
+    container.appendChild(cardsDataDiv);
   });
 }
 //   import(
