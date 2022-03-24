@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createGame } from './helperFunctions.js';
+import createGame from './helperFunctions.js';
 
 const infoContainer = document.querySelector('#info-container');
 
@@ -55,7 +55,7 @@ enterPlayerButton.addEventListener('click', () => {
       const createGameBtn = document.createElement('button');
       createGameBtn.addEventListener('click', createGame);
       createGameBtn.setAttribute('id', 'start-game-button');
-      createGameBtn.innerText = 'Start Game';
+      createGameBtn.innerText = 'Create New Game';
       container.appendChild(createGameBtn);
     })
     .catch((error) => {
