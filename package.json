@@ -4,10 +4,10 @@
   "description": "",
   "main": ".eslintrc.js",
   "scripts": {
-    "build": "webpack --config webpack_conf/webpack.prod.js",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack_conf/webpack.prod.js",
     "debug": "nodemon --inspect index.mjs",
     "start": "node index.mjs",
-    "watch": "webpack --watch --config webpack_conf/webpack.dev.js"
+    "watch": "NODE_OPTIONS=--openssl-legacy-provider webpack --watch --config webpack_conf/webpack.dev.js"
   },
   "repository": {
     "type": "git",

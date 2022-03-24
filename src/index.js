@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { createGame } from './helperFunctions.js';
 
 const infoContainer = document.querySelector('#info-container');
