@@ -76,14 +76,14 @@ export default function initGamesController(db) {
     const shuffledWhiteDeck = shuffleCards(rawWhiteDeck);
     const shuffledBlackDeck = shuffleCards(rawBlackDeck);
 
-    let player1Hand = [];
-    let player2Hand = [];
+    const player1Hand = [];
+    const player2Hand = [];
     let dealerHand = [];
 
     // pop ten cards from shuffled deck into each player's hand
     for (let i = 0; i < 10; i++) {
-      player1Hand = shuffledWhiteDeck.pop();
-      player2Hand = shuffledWhiteDeck.pop();
+      player1Hand.push(shuffledWhiteDeck.pop());
+      player2Hand.push(shuffledWhiteDeck.pop());
     }
 
     console.log('printing player1Hand...');
@@ -132,13 +132,13 @@ export default function initGamesController(db) {
       console.log('printing request.params.id');
       console.log(request.params.id);
 
-      let player1Hand = [];
-      let player2Hand = [];
+      const player1Hand = [];
+      const player2Hand = [];
 
       // make changes to the object
       for (let i = 0; i < 10; i++) {
-        player1Hand = game.gameState.shuffledWhiteDeck.pop();
-        player2Hand = game.gameState.shuffledWhiteDeck.pop();
+        player1Hand.push(game.gameState.shuffledWhiteDeck.pop());
+        player2Hand.push(game.gameState.shuffledWhiteDeck.pop());
       }
       const dealerHand = game.gameState.shuffledBlackDeck.pop();
 
