@@ -1,7 +1,10 @@
 import axios from 'axios';
+import { linebreak } from './helperFunctions';
 
 const infoContainer = document.querySelector('#info-container');
+const loggedInDiv = document.createElement('div');
 
+const buttonContainer = document.querySelector('#buttons-container');
 // player name div
 const playerNameDiv = document.createElement('div');
 
@@ -20,7 +23,7 @@ enterPlayerButton.setAttribute('type', 'submit');
 enterPlayerButton.setAttribute('for', 'player');
 enterPlayerButton.textContent = 'ENTER PLAYER NAME';
 
-playerNameDiv.appendChild(enterPlayerButton);
+buttonContainer.appendChild(enterPlayerButton);
 
 infoContainer.appendChild(playerNameDiv);
 
@@ -29,36 +32,60 @@ let currentGame = null;
 
 const runGame = function ({ player1Hand, player2Hand, dealerHand }) {
   // manipulate DOM
+  // show the dealer hand
+  infoContainer.innerHTML = `${dealerHand.text}`;
+
   const player1Container = document.querySelector('#player1-container');
+  player1Container.appendChild(linebreak);
 
-  player1Container.innerHTML = `
-    Your Hand:
-    ====
-    ${player1Hand[0]}
-    ====
-    ${player1Hand[1]}
-    ====
-    ${player1Hand[2]}
-    ====
-    ${player1Hand[3]}
-    ====
-    ${player1Hand[4]}
-    ====
-    ${player1Hand[5]}
-    ====
-    ${player1Hand[6]}
-    ====
-    ${player1Hand[7]}
-    ====
-    ${player1Hand[8]}
-    ==== 
-    ${player1Hand[9]}   
-  `;
+  // player1Container.innerHTML = `
+  //   Your Hand:
+  //   ====
+  //   ${player1Hand[0]}
+  //   ====
+  //   ${player1Hand[1]}
+  //   ====
+  //   ${player1Hand[2]}
+  //   ====
+  //   ${player1Hand[3]}
+  //   ====
+  //   ${player1Hand[4]}
+  //   ====
+  //   ${player1Hand[5]}
+  //   ====
+  //   ${player1Hand[6]}
+  //   ====
+  //   ${player1Hand[7]}
+  //   ====
+  //   ${player1Hand[8]}
+  //   ====
+  //   ${player1Hand[9]}
+  // `;
 
+  // build the card display, comprising of suit, name and card classList items
+  // these are then appended to the card element
+  const createCard = (cardInfo) => {
+    const suit = document.createElement('suit');
+    suit.classList.add('suit', cardInfo.color);
+    suit.innerText = cardInfo.suitSymbol;
+
+    const name = document.createElement('name');
+    name.classList.add(cardInfo.name, cardInfo.color);
+    name.innerText = cardInfo.name;
+
+    const card = document.createElement('div');
+    card.classList.add('card');
+
+    card.appendChild(name);
+    card.appendChild(suit);
+
+    return card;
+  };
   const player2Container = document.querySelector('#player2-container');
+  player2Container.appendChild(linebreak);
 
   player2Container.innerHTML = `
-    Your Hand:
+    Player 2's Hand:
     ====
     ${player2Hand[0]}
     ====
@@ -80,9 +107,6 @@ const runGame = function ({ player1Hand, player2Hand, dealerHand }) {
     ==== 
     ${player2Hand[9]}   
   `;
-
-  // show the dealer hand
-  infoContainer.innerHTML = `${dealerHand}`;
 };
 
 const dealCards = function () {
@@ -102,8 +126,9 @@ const dealCards = function () {
 };
 
 const createGame = function () {
-  const createGameBtnAgain = document.getElementById('start-game-button');
-  createGameBtnAgain.remove();
+  const createGameButtonAgain = document.getElementById('start-game-button');
+  createGameButtonAgain.remove();
+  loggedInDiv.remove();
   // Make a request to create a new game
   axios.post('/games')
     .then((response) => {
@@ -118,13 +143,13 @@ const createGame = function () {
       // for this current game, create a button that will allow the user to
       // manipulate the deck that is on the DB.
       // Create a button for it.
-      const dealBtn = document.createElement('button');
-      dealBtn.addEventListener('click', dealCards);
+      const dealButton = document.createElement('button');
+      dealButton.addEventListener('click', dealCards);
 
       // display the button
-      const container = document.querySelector('#game-container');
-      dealBtn.innerText = 'Deal';
-      container.appendChild(dealBtn);
+      dealButton.innerText = 'New Round';
+      dealButton.appendChild(linebreak);
+      buttonContainer.appendChild(dealButton);
     })
     .catch((error) => {
       // handle error
@@ -149,21 +174,20 @@ enterPlayerButton.addEventListener('click', () => {
       console.log(response.data);
       playerNameDiv.remove();
 
-      const container = document.querySelector('#game-container');
-
-      const loggedInDiv = document.createElement('div');
       loggedInDiv.textContent = response.data;
-      container.appendChild(loggedInDiv);
+      infoContainer.appendChild(loggedInDiv);
 
       // temporary createGame placeholder function
 
       // manipulate DOM, set up create game button
       // create game btn
-      const createGameBtn = document.createElement('button');
-      createGameBtn.addEventListener('click', createGame);
-      createGameBtn.setAttribute('id', 'start-game-button');
-      createGameBtn.innerText = 'Create New Game';
-      container.appendChild(createGameBtn);
+      const createGameButton = document.createElement('button');
+      createGameButton.addEventListener('click', createGame);
+      createGameButton.setAttribute('id', 'start-game-button');
+      createGameButton.innerText = 'Create New Game';
+      buttonContainer.appendChild(createGameButton);
+
+      enterPlayerButton.remove();
     })
     .catch((error) => {
       console.log(error);
