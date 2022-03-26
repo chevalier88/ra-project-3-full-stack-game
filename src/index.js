@@ -1,5 +1,4 @@
 import axios from 'axios';
-import createGame from './helperFunctions.js';
 
 const infoContainer = document.querySelector('#info-container');
 
@@ -26,7 +25,112 @@ playerNameDiv.appendChild(enterPlayerButton);
 infoContainer.appendChild(playerNameDiv);
 
 // create an empty game
-const currentGame = null;
+let currentGame = null;
+
+const runGame = function ({ player1Hand, player2Hand, dealerHand }) {
+  // manipulate DOM
+  const player1Container = document.querySelector('#player1-container');
+
+  player1Container.innerHTML = `
+    Your Hand:
+    ====
+    ${player1Hand[0]}
+    ====
+    ${player1Hand[1]}
+    ====
+    ${player1Hand[2]}
+    ====
+    ${player1Hand[3]}
+    ====
+    ${player1Hand[4]}
+    ====
+    ${player1Hand[5]}
+    ====
+    ${player1Hand[6]}
+    ====
+    ${player1Hand[7]}
+    ====
+    ${player1Hand[8]}
+    ==== 
+    ${player1Hand[9]}   
+  `;
+
+  const player2Container = document.querySelector('#player2-container');
+
+  player2Container.innerHTML = `
+    Your Hand:
+    ====
+    ${player2Hand[0]}
+    ====
+    ${player2Hand[1]}
+    ====
+    ${player2Hand[2]}
+    ====
+    ${player2Hand[3]}
+    ====
+    ${player2Hand[4]}
+    ====
+    ${player2Hand[5]}
+    ====
+    ${player2Hand[6]}
+    ====
+    ${player2Hand[7]}
+    ====
+    ${player2Hand[8]}
+    ==== 
+    ${player2Hand[9]}   
+  `;
+
+  // show the dealer hand
+  infoContainer.innerHTML = `${dealerHand}`;
+};
+
+const dealCards = function () {
+  axios.put(`/games/${currentGame.id}/deal`)
+    .then((response) => {
+      // get the updated hand value
+      currentGame = response.data;
+      console.log('printing currentGame...');
+      console.log(currentGame);
+      // display it to the user
+      runGame(currentGame);
+    })
+    .catch((error) => {
+      // handle error
+      console.log(error);
+    });
+};
+
+const createGame = function () {
+  const createGameBtnAgain = document.getElementById('start-game-button');
+  createGameBtnAgain.remove();
+  // Make a request to create a new game
+  axios.post('/games')
+    .then((response) => {
+      // set the global value to the new game.
+      currentGame = response.data;
+
+      console.log(currentGame);
+
+      // display it out to the user
+      runGame(currentGame);
+
+      // for this current game, create a button that will allow the user to
+      // manipulate the deck that is on the DB.
+      // Create a button for it.
+      const dealBtn = document.createElement('button');
+      dealBtn.addEventListener('click', dealCards);
+
+      // display the button
+      const container = document.querySelector('#game-container');
+      dealBtn.innerText = 'Deal';
+      container.appendChild(dealBtn);
+    })
+    .catch((error) => {
+      // handle error
+      console.log(error);
+    });
+};
 
 // entering player name either creates or checks for existing player id
 // login button functionality

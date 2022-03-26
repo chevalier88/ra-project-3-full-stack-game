@@ -42,16 +42,17 @@ const shuffleCards = function (cards) {
   return cards;
 };
 
-const makeDeck = function () {
+function makeDeck() {
   let deck = {};
   // create the empty deck at the beginning
   import(
-    './cah-cards-compact-base.json'
+    '../src/cah-cards-compact-base.json'
   ).then(({ default: cardsData }) => {
     deck = cardsData;
+    console.log('deck');
     return deck;
   });
-};
+}
 
 /*
  * ========================================================
@@ -71,7 +72,7 @@ export default function initGamesController(db) {
   const create = async (request, response) => {
     // deal out a new shuffled deck for this game.
     const wholeDeck = makeDeck();
-    console.log('printing wholeDeck...');
+    console.log('printing wholeDeck type...');
     console.log(wholeDeck);
     const rawWhiteDeck = wholeDeck.white;
     const rawBlackDeck = wholeDeck.black;
