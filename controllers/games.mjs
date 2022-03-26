@@ -10,6 +10,9 @@
  * ========================================================
  * ========================================================
  */
+import { readFileSync } from 'fs';
+import path from 'path';
+// import cardJSON from '../src/cah-cards-compact-base.json';
 
 // get a random index from an array given it's size
 const getRandomIndex = function (size) {
@@ -43,15 +46,8 @@ const shuffleCards = function (cards) {
 };
 
 function makeDeck() {
-  let deck = {};
-  // create the empty deck at the beginning
-  import(
-    '../src/cah-cards-compact-base.json'
-  ).then(({ default: cardsData }) => {
-    deck = cardsData;
-    console.log('deck');
-    return deck;
-  });
+  const deck = readFileSync(`${path.resolve()}/controllers/cah-cards-compact-base.json`);
+  return deck;
 }
 
 /*
@@ -71,11 +67,12 @@ export default function initGamesController(db) {
   // create a new game. Insert a new row in the DB.
   const create = async (request, response) => {
     // deal out a new shuffled deck for this game.
-    const wholeDeck = makeDeck();
+    const wholeDeck = JSON.parse(makeDeck());
     console.log('printing wholeDeck type...');
-    console.log(wholeDeck);
+    // console.log(JSON.parse(wholeDeck));
     const rawWhiteDeck = wholeDeck.white;
     const rawBlackDeck = wholeDeck.black;
+    // console.log(rawBlackDeck);
     const shuffledWhiteDeck = shuffleCards(rawWhiteDeck);
     const shuffledBlackDeck = shuffleCards(rawBlackDeck);
 
@@ -84,13 +81,17 @@ export default function initGamesController(db) {
     let dealerHand = [];
 
     // pop ten cards from shuffled deck into each player's hand
-    for (let i = 0; i <= 10; i += 1) {
+    for (let i = 0; i < 10; i++) {
       player1Hand = shuffledWhiteDeck.pop();
       player2Hand = shuffledWhiteDeck.pop();
     }
 
+    console.log('printing player1Hand...');
+    console.log(player1Hand);
     // pop 1 card for the dealer
     dealerHand = shuffledBlackDeck.pop();
+
+    console.log(`dealerHand: ${dealerHand.text}, ${dealerHand.pick}`);
 
     const newGame = {
       gameState: {
@@ -101,6 +102,9 @@ export default function initGamesController(db) {
         dealerHand,
       },
     };
+
+    console.log('printing newGame...');
+    console.log(newGame);
 
     try {
       // run the DB INSERT query
@@ -132,7 +136,7 @@ export default function initGamesController(db) {
       let player2Hand = [];
 
       // make changes to the object
-      for (let i = 0; i <= 10; i += 1) {
+      for (let i = 0; i < 10; i++) {
         player1Hand = game.gameState.shuffledWhiteDeck.pop();
         player2Hand = game.gameState.shuffledWhiteDeck.pop();
       }
