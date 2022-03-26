@@ -25,6 +25,9 @@ playerNameDiv.appendChild(enterPlayerButton);
 
 infoContainer.appendChild(playerNameDiv);
 
+// create an empty game
+const currentGame = null;
+
 // entering player name either creates or checks for existing player id
 // login button functionality
 enterPlayerButton.addEventListener('click', () => {

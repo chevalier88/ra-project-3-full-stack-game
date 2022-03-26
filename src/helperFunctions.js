@@ -58,3 +58,56 @@ export default function createGame() {
 //     console.log('cardsData: ', cardsData);
 //   });
 // }
+
+export const runGame = function ({ player1Hand, player2Hand }) {
+  // manipulate DOM
+  const player1Container = document.querySelector('#player1-container');
+
+  const player1HandScore = player1Hand[0].rank + player1Hand[1].rank;
+  const player2HandScore = player2Hand[0].rank + player2Hand[1].rank;
+
+  player1Container.innerText = `
+    Your Hand:
+    ====
+    ${player1Hand[0].name}
+    of
+    ${player1Hand[0].suit}
+    ====
+    ${player1Hand[1].name}
+    of
+    ${player1Hand[1].suit}
+    ====
+    Player 1's Total Score:
+    ${player1HandScore}
+  `;
+
+  const player2Container = document.querySelector('#player2-container');
+
+  player2Container.innerText = `
+    Your Hand:
+    ====
+    ${player2Hand[0].name}
+    of
+    ${player2Hand[0].suit}
+    ====
+    ${player2Hand[1].name}
+    of
+    ${player2Hand[1].suit}
+    ====
+    Player 2's Total Score:
+    ${player2HandScore}
+  `;
+
+  const infoContainer = document.querySelector('#info-container');
+
+  // specify win declaration
+  if (player1HandScore > player2HandScore) {
+    infoContainer.innerText = `Game ${currentGame.id}: Player 1 Wins!`;
+  } else if (player2HandScore > player1HandScore) {
+    infoContainer.innerText = `Game ${currentGame.id}: Player 2 Wins!`;
+  } else if (player1HandScore === player2HandScore) {
+    infoContainer.innerText = `Game ${currentGame.id}: Player Round is Tied!`;
+  } else if (currentGame.player1Hand[0] === null) {
+    infoContainer.innerText = `Game ${currentGame.id}: Player Round is Tied!`;
+  }
+};

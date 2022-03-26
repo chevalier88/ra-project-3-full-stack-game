@@ -67,23 +67,37 @@ const makeDeck = function () {
  */
 
 export default function initGamesController(db) {
-  // render the main page
-  const index = (request, response) => {
-    response.render('games/index');
-  };
-
   // create a new game. Insert a new row in the DB.
   const create = async (request, response) => {
     // deal out a new shuffled deck for this game.
-    const cardDeck = shuffleCards(makeDeck());
-    const player1Hand = [cardDeck.white.pop(), cardDeck.white.pop()];
-    const player2Hand = [cardDeck.white.pop(), cardDeck.white.pop()];
+    const wholeDeck = makeDeck();
+    console.log('printing wholeDeck...');
+    console.log(wholeDeck);
+    const rawWhiteDeck = wholeDeck.white;
+    const rawBlackDeck = wholeDeck.black;
+    const shuffledWhiteDeck = shuffleCards(rawWhiteDeck);
+    const shuffledBlackDeck = shuffleCards(rawBlackDeck);
+
+    let player1Hand = [];
+    let player2Hand = [];
+    let dealerHand = [];
+
+    // pop ten cards from shuffled deck into each player's hand
+    for (let i = 0; i <= 10; i += 1) {
+      player1Hand = shuffledWhiteDeck.pop();
+      player2Hand = shuffledWhiteDeck.pop();
+    }
+
+    // pop 1 card for the dealer
+    dealerHand = shuffledBlackDeck.pop();
 
     const newGame = {
       gameState: {
-        cardDeck,
+        shuffledWhiteDeck,
+        shuffledBlackDeck,
         player1Hand,
         player2Hand,
+        dealerHand,
       },
     };
 
@@ -97,7 +111,7 @@ export default function initGamesController(db) {
         id: game.id,
         player1Hand: game.gameState.player1Hand,
         player2Hand: game.gameState.player2Hand,
-
+        dealerHand: game.gameState.dealerHand,
       });
     } catch (error) {
       response.status(500).send(error);
@@ -113,16 +127,24 @@ export default function initGamesController(db) {
       console.log('printing request.params.id');
       console.log(request.params.id);
 
+      let player1Hand = [];
+      let player2Hand = [];
+
       // make changes to the object
-      const player1Hand = [game.gameState.cardDeck.pop(), game.gameState.cardDeck.pop()];
-      const player2Hand = [game.gameState.cardDeck.pop(), game.gameState.cardDeck.pop()];
+      for (let i = 0; i <= 10; i += 1) {
+        player1Hand = game.gameState.shuffledWhiteDeck.pop();
+        player2Hand = game.gameState.shuffledWhiteDeck.pop();
+      }
+      const dealerHand = game.gameState.shuffledBlackDeck.pop();
 
       // update the game with the new info
       await game.update({
         gameState: {
-          cardDeck: game.gameState.cardDeck,
+          shuffledWhiteDeck: game.gameState.shuffledWhiteDeck,
+          shuffledBlackDeck: game.gameState.shuffledBlackDeck,
           player1Hand,
           player2Hand,
+          dealerHand,
         },
 
       });
@@ -136,6 +158,7 @@ export default function initGamesController(db) {
         id: game.id,
         player1Hand: game.gameState.player1Hand,
         player2Hand: game.gameState.player2Hand,
+        dealerHand: game.gameState.dealerHand,
       });
     } catch (error) {
       response.status(500).send(error);
@@ -147,6 +170,5 @@ export default function initGamesController(db) {
   return {
     deal,
     create,
-    index,
   };
 }
