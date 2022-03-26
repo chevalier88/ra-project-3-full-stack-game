@@ -109,7 +109,7 @@ export default function initGamesController(db) {
     try {
       // run the DB INSERT query
       const game = await db.Game.create(newGame);
-
+      console.log(game.toJSON());
       // send the new game back to the user.
       // dont include the deck so the user can't cheat
       response.send({
