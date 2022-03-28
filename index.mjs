@@ -62,12 +62,13 @@ websocketServer.on('connection', (webSocketClient) => {
     websocketServer
       .clients
       .forEach((client) => {
+        console.log(message);
+        const parsed_message = JSON.parse(message);
         // send the client the current message
-        if (message.user_type === 'player') {
+        if (parsed_message.user_type === 'player') {
           console.log('received a message from client(s), we have a new player...');
-          app.post('/login', PlayersController.login);
+          console.log(parsed_message.name);
         }
-        client.send('you are connected to the Crowds Against Humanity App');
       });
   });
 });
