@@ -53,6 +53,7 @@
     "json-loader": "^0.5.7",
     "method-override": "^3.0.0",
     "pg": "^8.5.1",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "ws": "^8.5.0"
   }
 }

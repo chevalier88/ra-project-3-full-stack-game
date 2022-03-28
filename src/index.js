@@ -23,6 +23,24 @@ enterPlayerButton.setAttribute('type', 'submit');
 enterPlayerButton.setAttribute('for', 'player');
 enterPlayerButton.textContent = 'ENTER PLAYER NAME';
 
+// enter number of players button, for later summoning
+// player numbers div
+const playerNumbersDiv = document.createElement('div');
+
+const playerNumbersLabel = document.createElement('label');
+playerNumbersLabel.setAttribute('for', 'player-numbers');
+playerNumbersLabel.textContent = 'Number of Players: ';
+playerNumbersDiv.appendChild(playerNumbersLabel);
+
+const playerNumbersInput = document.createElement('input');
+playerNumbersInput.setAttribute('id', 'player-numbers');
+playerNumbersDiv.appendChild(playerNumbersInput);
+
+const enterPlayerNumbersButton = document.createElement('button');
+enterPlayerNumbersButton.setAttribute('type', 'submit');
+enterPlayerNumbersButton.setAttribute('for', 'player-numbers');
+enterPlayerNumbersButton.textContent = 'SUBMIT';
+
 buttonContainer.appendChild(enterPlayerButton);
 
 infoContainer.appendChild(playerNameDiv);
@@ -30,15 +48,18 @@ infoContainer.appendChild(playerNameDiv);
 // create an empty game
 let currentGame = null;
 
+// empty player number count
+let playerNumbers = null;
+
 const runGame = function ({ player1Hand, player2Hand, dealerHand }) {
   // manipulate DOM
   // show the dealer hand
   infoContainer.innerHTML = `${dealerHand.text}`;
 
-  const player1Container = document.querySelector('#player1-container');
-  player1Container.appendChild(linebreak);
+  const playersContainer = document.querySelector('#players-container');
+  playersContainer.appendChild(linebreak);
 
-  // player1Container.innerHTML = `
+  // playersContainer.innerHTML = `
   //   Your Hand:
   //   ====
   //   ${player1Hand[0]}
@@ -62,51 +83,32 @@ const runGame = function ({ player1Hand, player2Hand, dealerHand }) {
   //   ${player1Hand[9]}
   // `;
 
-  // build the card display, comprising of suit, name and card classList items
-  // these are then appended to the card element
-  const createCard = (cardInfo) => {
-    const suit = document.createElement('suit');
-    suit.classList.add('suit', cardInfo.color);
-    suit.innerText = cardInfo.suitSymbol;
+  // const player2Container = document.createElement('div');
+  // player2Container.appendChild(linebreak);
 
-    const name = document.createElement('name');
-    name.classList.add(cardInfo.name, cardInfo.color);
-    name.innerText = cardInfo.name;
-
-    const card = document.createElement('div');
-    card.classList.add('card');
-
-    card.appendChild(name);
-    card.appendChild(suit);
-
-    return card;
-  };
-  const player2Container = document.querySelector('#player2-container');
-  player2Container.appendChild(linebreak);
-
-  player2Container.innerHTML = `
-    Player 2's Hand:
-    ====
-    ${player2Hand[0]}
-    ====
-    ${player2Hand[1]}
-    ====
-    ${player2Hand[2]}
-    ====
-    ${player2Hand[3]}
-    ====
-    ${player2Hand[4]}
-    ====
-    ${player2Hand[5]}
-    ====
-    ${player2Hand[6]}
-    ====
-    ${player2Hand[7]}
-    ====
-    ${player2Hand[8]}
-    ==== 
-    ${player2Hand[9]}   
-  `;
+  // player2Container.innerHTML = `
+  //   Player 2's Hand:
+  //   ====
+  //   ${player2Hand[0]}
+  //   ====
+  //   ${player2Hand[1]}
+  //   ====
+  //   ${player2Hand[2]}
+  //   ====
+  //   ${player2Hand[3]}
+  //   ====
+  //   ${player2Hand[4]}
+  //   ====
+  //   ${player2Hand[5]}
+  //   ====
+  //   ${player2Hand[6]}
+  //   ====
+  //   ${player2Hand[7]}
+  //   ====
+  //   ${player2Hand[8]}
+  //   ====
+  //   ${player2Hand[9]}
+  // `;
 };
 
 const dealCards = function () {
@@ -173,23 +175,35 @@ enterPlayerButton.addEventListener('click', () => {
       console.log('printing response.data response...');
       console.log(response.data);
       playerNameDiv.remove();
+      enterPlayerButton.remove();
 
       loggedInDiv.textContent = response.data;
       infoContainer.appendChild(loggedInDiv);
+      infoContainer.appendChild(playerNumbersDiv);
 
-      // temporary createGame placeholder function
-
-      // manipulate DOM, set up create game button
-      // create game btn
-      const createGameButton = document.createElement('button');
-      createGameButton.addEventListener('click', createGame);
-      createGameButton.setAttribute('id', 'start-game-button');
-      createGameButton.innerText = 'Create New Game';
-      buttonContainer.appendChild(createGameButton);
-
-      enterPlayerButton.remove();
+      buttonContainer.appendChild(enterPlayerNumbersButton);
     })
     .catch((error) => {
       console.log(error);
     });
+});
+
+// temporary createGame placeholder function
+
+// manipulate DOM, set up create game button
+// create game btn
+enterPlayerNumbersButton.addEventListener('click', () => {
+  loggedInDiv.remove();
+
+  playerNumbers = playerNumbersInput.value;
+
+  infoContainer.innerHTML = `${playerNumbers} Player Game Created! Awaiting Players...`;
+  playerNumbersDiv.remove();
+  enterPlayerNumbersButton.remove();
+
+  const createGameButton = document.createElement('button');
+  createGameButton.addEventListener('click', createGame);
+  createGameButton.setAttribute('id', 'start-game-button');
+  createGameButton.innerText = 'Create New Game';
+  buttonContainer.appendChild(createGameButton);
 });
