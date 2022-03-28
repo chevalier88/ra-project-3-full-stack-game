@@ -43,7 +43,15 @@ const websocketServer = new WebSocketServer({ server });
 
 websocketServer.on('connection', (webSocketClient) => {
   // send feedback to the incoming connection
-  webSocketClient.send('{ "connection" : "ok"}');
+  // generate a new clientID
+  const clientId = guid();
+  clients[clientId] = 'connected';
+  console.log(clients);
+  const newClientConnectPayload = {
+    method: 'connect',
+    clientId,
+  };
+  webSocketClient.send(JSON.stringify(newClientConnectPayload));
 
   // when a message is received
   webSocketClient.on('message', (message) => {
@@ -52,17 +60,10 @@ websocketServer.on('connection', (webSocketClient) => {
       .clients
       .forEach((client) => {
         // send the client the current message
-        console.log('trying to send client message...');
+        console.log('received a message from client(s)...');
         client.send('you are connected to the Crowds Against Humanity App');
       });
   });
-
-  // generate a new clientID
-  const clientId = guid();
-  clients[clientId] = {
-    connection,
-
-  };
 });
 // Set Express to listen on the given port with websockets
 // app.listen(PORT);
