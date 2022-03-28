@@ -76,16 +76,6 @@ export default function initGamesController(db) {
     const shuffledWhiteDeck = shuffleCards(rawWhiteDeck);
     const shuffledBlackDeck = shuffleCards(rawBlackDeck);
 
-    const player1Hand = [];
-    const player2Hand = [];
-    let dealerHand = [];
-
-    // pop ten cards from shuffled deck into each player's hand
-    for (let i = 0; i < 10; i++) {
-      player1Hand.push(shuffledWhiteDeck.pop());
-      player2Hand.push(shuffledWhiteDeck.pop());
-    }
-
     console.log('printing player1Hand...');
     console.log(player1Hand);
     // pop 1 card for the dealer
@@ -97,9 +87,6 @@ export default function initGamesController(db) {
       gameState: {
         shuffledWhiteDeck,
         shuffledBlackDeck,
-        player1Hand,
-        player2Hand,
-        dealerHand,
       },
     };
 
@@ -114,9 +101,6 @@ export default function initGamesController(db) {
       // dont include the deck so the user can't cheat
       response.send({
         id: game.id,
-        player1Hand: game.gameState.player1Hand,
-        player2Hand: game.gameState.player2Hand,
-        dealerHand: game.gameState.dealerHand,
       });
     } catch (error) {
       response.status(500).send(error);

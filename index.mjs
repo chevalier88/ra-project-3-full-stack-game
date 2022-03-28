@@ -9,6 +9,14 @@ import bindRoutes from './routes.mjs';
 // import clientID randomizing function
 import { guid } from './websocketFunctions.mjs';
 
+// hard to separate websockets from routes so i'll put it all in mjs for now.
+import db from './models/index.mjs';
+
+// hard to separate websockets from controllers so i'll put it all in mjs for now.
+import initPlayersController from './controllers/players.mjs';
+
+const PlayersController = initPlayersController(db);
+
 // Initialise Express instance
 const app = express();
 // Set the Express view engine to expect EJS templates
@@ -28,28 +36,23 @@ app.use(express.json());
 // Expose the files stored in the distribution folder
 app.use(express.static('dist'));
 
-bindRoutes(app);
-
 const serverPORT = process.env.serverPORT || 3009;
 
 const server = http.createServer(app);
 
 // build empty object to track clients
-const clients = {};
+const players = {};
 
+// instantiate the websocket server
 const websocketServer = new WebSocketServer({ server });
 
 // Bind route definitions to the Express application
-
 websocketServer.on('connection', (webSocketClient) => {
   // send feedback to the incoming connection
   // generate a new clientID
-  const clientId = guid();
-  clients[clientId] = 'connected';
-  console.log(clients);
   const newClientConnectPayload = {
     method: 'connect',
-    clientId,
+    state: 'awaiting other players. send your name and state your user type like this: {name: "graham", user_type: "spectator"} or {name: "llama", user_type: "player"}.',
   };
   webSocketClient.send(JSON.stringify(newClientConnectPayload));
 
@@ -60,11 +63,15 @@ websocketServer.on('connection', (webSocketClient) => {
       .clients
       .forEach((client) => {
         // send the client the current message
-        console.log('received a message from client(s)...');
+        if (message.user_type === 'player') {
+          console.log('received a message from client(s), we have a new player...');
+          app.post('/login', PlayersController.login);
+        }
         client.send('you are connected to the Crowds Against Humanity App');
       });
   });
 });
+
 // Set Express to listen on the given port with websockets
 // app.listen(PORT);
 server.listen(serverPORT, () => {

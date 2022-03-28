@@ -4,7 +4,7 @@ import db from './models/index.mjs';
 import initPlayersController from './controllers/players.mjs';
 import initGamesController from './controllers/games.mjs';
 
-export default function bindRoutes(app) {
+export default function bindRoutes(websocketServer, app) {
   const PlayersController = initPlayersController(db);
   const GamesController = initGamesController(db);
 
@@ -12,6 +12,7 @@ export default function bindRoutes(app) {
   app.get('/', (request, response) => {
     response.sendFile(resolve('dist', 'main.html'));
   });
+
   // post new or existing Player Name
   app.post('/login', PlayersController.login);
 
