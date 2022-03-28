@@ -23,7 +23,6 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 // Expose the files stored in the public folder
 app.use(express.static('public'));
-app.use(express.json());
 
 // Expose the files stored in the distribution folder
 app.use(express.static('dist'));
@@ -34,39 +33,8 @@ const serverPORT = process.env.serverPORT || 3009;
 
 const server = http.createServer(app);
 
-// build empty object to track clients
-const clients = {};
+// Set Express to listen on the given port with a normal HTTP server first
 
-const websocketServer = new WebSocketServer({ server });
-
-// Bind route definitions to the Express application
-
-websocketServer.on('connection', (webSocketClient) => {
-  // send feedback to the incoming connection
-  // generate a new clientID
-  const clientId = guid();
-  clients[clientId] = 'connected';
-  console.log(clients);
-  const newClientConnectPayload = {
-    method: 'connect',
-    clientId,
-  };
-  webSocketClient.send(JSON.stringify(newClientConnectPayload));
-
-  // when a message is received
-  webSocketClient.on('message', (message) => {
-    // for each websocket client
-    websocketServer
-      .clients
-      .forEach((client) => {
-        // send the client the current message
-        console.log('received a message from client(s)...');
-        client.send('you are connected to the Crowds Against Humanity App');
-      });
-  });
-});
-// Set Express to listen on the given port with websockets
-// app.listen(PORT);
 server.listen(serverPORT, () => {
   console.log(`Websocket server started on port ${serverPORT}`);
 });
