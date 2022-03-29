@@ -4,7 +4,9 @@ import express from 'express';
 
 import { WebSocketServer } from 'ws';
 
-const serverPort = 3000;
+const clients = {};
+
+const serverPort = 3010;
 
 const app = express();
 const server = http.createServer(app);
@@ -14,6 +16,7 @@ const
 
 websocketServer.on('connection', (webSocketClient) => {
   webSocketClient.send('{ "connection" : "ok"}');
+
   webSocketClient.on('message', (message) => { websocketServer.clients.forEach((client) => { client.send(`{ "message" : ${message} back at you}`); });
   });
 });

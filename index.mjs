@@ -36,5 +36,5 @@ const server = http.createServer(app);
 // Set Express to listen on the given port with a normal HTTP server first
 
 server.listen(serverPORT, () => {
-  console.log(`Websocket server started on port ${serverPORT}`);
+  console.log(`HTTP server started on port ${serverPORT}`);
 });
