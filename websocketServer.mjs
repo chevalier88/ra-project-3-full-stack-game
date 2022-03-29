@@ -13,10 +13,17 @@ const
   websocketServer = new WebSocketServer({ server });
 
 websocketServer.on('connection', (webSocketClient) => {
-  webSocketClient.send(JSON.stringify({
-    connection: 'ok',
-    no_of_clients: websocketServer.clients.size,
-  }));
+  // webSocketClient.send(JSON.stringify({
+  //   connection: 'ok',
+  //   no_of_clients: websocketServer.clients.size,
+  // }));
+
+  websocketServer.clients.forEach((client) => {
+    client.send(JSON.stringify({
+      connection: 'ok',
+      no_of_clients: websocketServer.clients.size,
+    }));
+  });
 
   webSocketClient.on('message', (message) => { websocketServer.clients.forEach((client) => {
     console.log(message);
