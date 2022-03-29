@@ -33,5 +33,28 @@
       integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
       crossorigin="anonymous"
     ></script>
+    <script>
+      const infoContainer = document.querySelector('#info-container');
+      const buttonsContainer = document.querySelector('#buttons-container');
+      const playersContainer = document.querySelector('#players-container');
+
+      let ws;
+
+      function init() {
+        ws = new WebSocket('ws://localhost:3010');
+        ws.onopen = () => {
+          console.log('Connection opened!');
+          infoContainer.innerHTML = 'connected!'
+        }
+        ws.onmessage = function(e) {
+          console.log('received new message...');
+          const message = e.data;
+          infoContainer.innerHTML = message;
+        }
+
+        infoContainer.html
+      }
+      init();
+    </script>
   </body>
 </html>

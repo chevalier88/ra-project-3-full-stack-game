@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+let userType;
+
 const infoContainer = document.querySelector('#info-container');
 const buttonsContainer = document.querySelector('#buttons-container');
 const playersContainer = document.querySelector('#players-container');
@@ -7,23 +9,25 @@ const playersContainer = document.querySelector('#players-container');
 infoContainer.innerHTML = 'Welcome to Crowds Against Humanity! Connect to the host game below:';
 
 // user decides whether a player or a spectator
-function connectToWebsocketServer() {
-  // ws.onopen = function (e) {
-  //   console.log('connection established');
-  // };
-  console.log('connecting...');
-  axios.get('/connect')
-    .then((response) => {
-      console.log(response);
-      infoContainer.innerHTML = JSON.stringify(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+function joinAsPlayer() {
+  console.log("you're a player, playa");
+  userType = 'player';
+  infoContainer.innerHTML = 'you are a player!';
 }
 
-const connectToServerButton = document.createElement('button');
-connectToServerButton.addEventListener('click', connectToWebsocketServer);
-connectToServerButton.setAttribute('id', 'connect-to-server-button');
-connectToServerButton.innerText = 'Connect To Server';
-buttonsContainer.appendChild(connectToServerButton);
+function joinAsSpectator() {
+  console.log("you're a spectator, casul");
+  userType = 'spectator';
+}
+
+const connectAsSpectatorButton = document.createElement('button');
+connectAsSpectatorButton.addEventListener('click', joinAsSpectator);
+connectAsSpectatorButton.setAttribute('id', 'check-server-status-button');
+connectAsSpectatorButton.innerText = 'Join as Spectator';
+buttonsContainer.appendChild(connectAsSpectatorButton);
+
+const connectAsPlayerButton = document.createElement('button');
+connectAsPlayerButton.addEventListener('click', joinAsPlayer);
+connectAsPlayerButton.setAttribute('id', 'connect-to-server-button');
+connectAsPlayerButton.innerText = 'Join as Player';
+buttonsContainer.appendChild(connectAsPlayerButton);

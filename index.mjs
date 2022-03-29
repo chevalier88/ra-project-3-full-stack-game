@@ -40,20 +40,19 @@ app.get('/', (request, response) => {
   response.sendFile(resolve('dist', 'main.html'));
 });
 
-app.get('/connect', (request, response) => {
-  const ws = new WebSocket('ws://localhost:3010/');
+// app.get('/connect', (request, response) => {
+//   // ws.onopen = function () {
+//   const ws = new WebSocket('ws://localhost:3010/');
 
-  // ws.onopen = function () {
-
-  // };
-  ws.onmessage = function (e) {
-    const message = e.data;
-    console.log('received new message...');
-    console.log(message);
-    response.send(message);
-  };
-  // console.log(`new client ${guid()} just connected`);
-});
+//   // };
+//   ws.onmessage = function (e) {
+//     const message = e.data;
+//     console.log('received new message...');
+//     console.log(message);
+//     response.send(message);
+//   };
+//   // console.log(`new client ${guid()} just connected`);
+// });
 
 app.listen(PORT);
 console.log(`http server listening on ${PORT}`);
