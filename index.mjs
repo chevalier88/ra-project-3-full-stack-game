@@ -3,13 +3,17 @@ import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 
 import http from 'http';
+import WebSocket from 'ws';
+import { resolve } from 'path';
 import bindRoutes from './routes.mjs';
 
-// import clientID randomizing function
+// // import clientID randomizing function
 import { guid } from './websocketFunctions.mjs';
 
 // Initialise Express instance
 const app = express();
+// expressWs(app);
+
 // Set the Express view engine to expect EJS templates
 app.set('view engine', 'ejs');
 // Bind cookie parser middleware to parse cookies in requests
@@ -27,14 +31,29 @@ app.use(express.json());
 // Expose the files stored in the distribution folder
 app.use(express.static('dist'));
 
-bindRoutes(app);
+const PORT = process.env.PORT || 3009;
 
-const serverPORT = process.env.serverPORT || 3009;
+// build the websocket
 
-const server = http.createServer(app);
-
-// Set Express to listen on the given port with websockets
-// app.listen(PORT);
-server.listen(serverPORT, () => {
-  console.log(`Websocket server started on port ${serverPORT}`);
+// special JS page. Include the webpack main.html file
+app.get('/', (request, response) => {
+  response.sendFile(resolve('dist', 'main.html'));
 });
+
+app.get('/connect', (request, response) => {
+  const ws = new WebSocket('ws://localhost:3010/');
+
+  // ws.onopen = function () {
+
+  // };
+  ws.onmessage = function (e) {
+    const message = e.data;
+    console.log('received new message...');
+    console.log(message);
+    response.send(message);
+  };
+  // console.log(`new client ${guid()} just connected`);
+});
+
+app.listen(PORT);
+console.log(`http server listening on ${PORT}`);
