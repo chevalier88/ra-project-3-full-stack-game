@@ -13,6 +13,10 @@ function connectToWebsocketServer() {
   // };
   console.log('connecting?');
 }
+
+function createGame() {
+  console.log('creating game?');
+}
 const infoContainer = document.querySelector('#info-container');
 const buttonContainer = document.querySelector('#buttons-container');
 const playersContainer = document.querySelector('#players-container');
@@ -26,3 +30,23 @@ connectToServerButton.addEventListener('click', connectToWebsocketServer);
 connectToServerButton.setAttribute('id', 'connect-to-server-button');
 connectToServerButton.innerText = 'Connect To Server';
 buttonContainer.appendChild(connectToServerButton);
+
+// const createGameButton = document.createElement('button');
+// createGameButton.addEventListener('click', createGame);
+// createGameButton.setAttribute('id', 'start-game-button');
+// createGameButton.innerText = 'Create New Game';
+// buttonContainer.appendChild(createGameButton);
+const playerNameLabel = document.createElement('label');
+playerNameLabel.setAttribute('for', 'player');
+playerNameLabel.textContent = 'Player Name:  ';
+playersContainer.appendChild(playerNameLabel);
+
+const playerNameInput = document.createElement('input');
+playerNameInput.setAttribute('id', 'player');
+playersContainer.appendChild(playerNameInput);
+
+// start game button
+const enterPlayerButton = document.createElement('button');
+enterPlayerButton.setAttribute('type', 'submit');
+enterPlayerButton.setAttribute('for', 'player');
+enterPlayerButton.textContent = 'ENTER PLAYER NAME';
