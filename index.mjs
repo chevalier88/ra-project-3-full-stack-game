@@ -2,13 +2,8 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 
-import http from 'http';
-import WebSocket from 'ws';
 import { resolve } from 'path';
 import bindRoutes from './routes.mjs';
-
-// // import clientID randomizing function
-import { guid } from './websocketFunctions.mjs';
 
 // Initialise Express instance
 const app = express();
@@ -39,20 +34,6 @@ const PORT = process.env.PORT || 3009;
 app.get('/', (request, response) => {
   response.sendFile(resolve('dist', 'main.html'));
 });
-
-// app.get('/connect', (request, response) => {
-//   // ws.onopen = function () {
-//   const ws = new WebSocket('ws://localhost:3010/');
-
-//   // };
-//   ws.onmessage = function (e) {
-//     const message = e.data;
-//     console.log('received new message...');
-//     console.log(message);
-//     response.send(message);
-//   };
-//   // console.log(`new client ${guid()} just connected`);
-// });
 
 app.listen(PORT);
 console.log(`http server listening on ${PORT}`);

@@ -12,13 +12,15 @@
       integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
       crossorigin="anonymous"
     /> -->
-    <title>Cards Against Humanity BASE</title>
+    <title>Crowds Against Humanity BASE</title>
   </head>
 
   <body>
-    <h1> Cards Against Humanity BASE </h1>
-    <div class="container" id="game-container">
-      <div class="col" id="info-container">
+    <h1> Crowds Against Humanity BASE </h1>
+    <div class="container-fluid" id="game-container">
+      <div class="row" id="info-container">
+        <div class = "col" id = "users-logged-in"></div>
+        <div class="col" id = "message-box"></div>
       </div>
       <br>
       <div class="row" id = "players-container">
@@ -28,33 +30,12 @@
       </div>
     </div>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
-      crossorigin="anonymous"
-    ></script>
-    <script>
+    <script defer>
       const infoContainer = document.querySelector('#info-container');
       const buttonsContainer = document.querySelector('#buttons-container');
       const playersContainer = document.querySelector('#players-container');
 
-      let ws;
-
-      function init() {
-        ws = new WebSocket('ws://localhost:3010');
-        ws.onopen = () => {
-          console.log('Connection opened!');
-          infoContainer.innerHTML = 'connected!'
-        }
-        ws.onmessage = function(e) {
-          console.log('received new message...');
-          const message = e.data;
-          infoContainer.innerHTML = message;
-        }
-
-        infoContainer.html
-      }
-      init();
+      let ws = new WebSocket('ws://localhost:3010');
     </script>
   </body>
 </html>
