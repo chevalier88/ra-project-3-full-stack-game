@@ -3,7 +3,6 @@ import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 
 import http from 'http';
-import WebSocket, { WebSocketServer } from 'ws';
 import bindRoutes from './routes.mjs';
 
 // import clientID randomizing function
@@ -34,37 +33,6 @@ const serverPORT = process.env.serverPORT || 3009;
 
 const server = http.createServer(app);
 
-// build empty object to track clients
-const clients = {};
-
-const websocketServer = new WebSocketServer({ server });
-
-// Bind route definitions to the Express application
-
-websocketServer.on('connection', (webSocketClient) => {
-  // send feedback to the incoming connection
-  // generate a new clientID
-  const clientId = guid();
-  clients[clientId] = 'connected';
-  console.log(clients);
-  const newClientConnectPayload = {
-    method: 'connect',
-    clientId,
-  };
-  webSocketClient.send(JSON.stringify(newClientConnectPayload));
-
-  // when a message is received
-  webSocketClient.on('message', (message) => {
-    // for each websocket client
-    websocketServer
-      .clients
-      .forEach((client) => {
-        // send the client the current message
-        console.log('received a message from client(s)...');
-        client.send('you are connected to the Crowds Against Humanity App');
-      });
-  });
-});
 // Set Express to listen on the given port with websockets
 // app.listen(PORT);
 server.listen(serverPORT, () => {
