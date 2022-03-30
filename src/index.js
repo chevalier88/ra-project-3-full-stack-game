@@ -17,6 +17,8 @@ messageContainer.innerHTML = 'Welcome to Crowds Against Humanity!';
 //   console.log('Connection opened!');
 //   messageContainer.innerHTML = 'connected!';
 // };
+
+// broadcast webserver messages upon events like joining
 ws.onmessage = function (e) {
   console.log('received new message...');
   const message = e.data;
@@ -28,6 +30,12 @@ ws.onmessage = function (e) {
 function disconnectSocket() {
   console.log('disconnecting from Websocket server!');
   messageContainer.innerHTML = 'you have disconnected!';
+
+  // if you're a player and you disconnect, it impacts whether the game can begin.
+  // so if you disconnect, the websocket server needs to know.
+  if (userType === 'player') {
+    console.log('player has disconnected');
+  }
   ws.close();
   disconnectButton.remove();
   // connectAsPlayerButton.remove();
@@ -35,6 +43,7 @@ function disconnectSocket() {
 }
 
 // user decides whether a player or a spectator
+// join as a player and record the player state on the websocket server
 function joinAsPlayer() {
   console.log("you're a player, playa");
   userType = 'player';
@@ -49,6 +58,7 @@ function joinAsPlayer() {
   connectAsSpectatorButton.remove();
 }
 
+// join as a spectator and record the spectator state on the ws server
 function joinAsSpectator() {
   console.log("you're a spectator, casul");
   userType = 'spectator';
@@ -63,6 +73,9 @@ function joinAsSpectator() {
   connectAsSpectatorButton.remove();
 }
 
+// name entry Div
+const clientNameDiv = document.createElement('div');
+
 const clientNameLabel = document.createElement('label');
 clientNameLabel.setAttribute('for', 'client');
 clientNameLabel.textContent = 'Enter Your Name:  ';
@@ -70,6 +83,11 @@ clientNameLabel.textContent = 'Enter Your Name:  ';
 const clientNameInput = document.createElement('input');
 clientNameInput.setAttribute('id', 'client');
 
+clientNameDiv.appendChild(clientNameLabel);
+clientNameDiv.appendChild(clientNameInput);
+playersContainer.appendChild(clientNameDiv);
+
+// connect as a spectator button DOM
 const connectAsSpectatorButton = document.createElement('button');
 connectAsSpectatorButton.addEventListener('click', joinAsSpectator);
 connectAsSpectatorButton.setAttribute('id', 'join-as-spectator-button');
@@ -77,12 +95,17 @@ connectAsSpectatorButton.setAttribute('type', 'submit');
 connectAsSpectatorButton.setAttribute('for', 'client');
 connectAsSpectatorButton.innerText = 'Join as Spectator';
 
+// connect as a player button DOM
 const connectAsPlayerButton = document.createElement('button');
 connectAsPlayerButton.addEventListener('click', joinAsPlayer);
 connectAsPlayerButton.setAttribute('id', 'join-as-player-button');
 connectAsPlayerButton.setAttribute('for', 'client');
 connectAsPlayerButton.innerText = 'Join as Player';
 
+buttonsContainer.appendChild(connectAsSpectatorButton);
+buttonsContainer.appendChild(connectAsPlayerButton);
+
+// disconnect button DOM
 const disconnectButton = document.createElement('button');
 disconnectButton.addEventListener('click', disconnectSocket);
 disconnectButton.setAttribute('id', 'disconnect-button');

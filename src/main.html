@@ -32,39 +32,9 @@
       </div>
     </div>
     <script>
-      const messageContainer = document.querySelector('#message-box');
-      const infoContainer = document.querySelector('#info-container');
-      const buttonsContainer = document.querySelector('#buttons-container');
-      const playersContainer = document.querySelector('#players-container');
 
       const ws = new WebSocket('ws://localhost:3010');
 
-      // function connectWebSocket(){
-      //   console.log('connecting to websocket server!')
-      //   const ws = new WebSocket('ws://localhost:3010');
-      // }
-
-      // function connectWebSocket(string){
-      //   const ws = new WebSocket(string);
-      //   console.log("connecting to websocket server!")
-        
-      //   // clicking connect lets you put your name, disconnect, and pick connection type
-      //   playersContainer.appendChild(clientNameInput);
-      //   playersContainer.appendChild(clientNameLabel);
-
-      //   buttonsContainer.appendChild(disconnectButton);
-      //   buttonsContainer.appendChild(connectAsSpectatorButton);
-      //   buttonsContainer.appendChild(connectAsPlayerButton);
-        // ws.onopen = () => {
-        //   console.log('Connection opened!');
-        //   container.innerHTML = 'connected!';
-        // };
-        // ws.onmessage = function (e) {
-        //   console.log('received new message...');
-        //   const message = e.data;
-        //   container.innerHTML = message;
-        // };
-      // }
     </script>
 
   </body>
