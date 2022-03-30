@@ -31,6 +31,10 @@ websocketServer.on('connection', (webSocketClient) => {
     }));
   });
 
+  webSocketClient.on('close', () => {
+    console.log(`1 connection closed, ${websocketServer.clients.size} clients left`);
+  });
+
   webSocketClient.on('message', (message) => { websocketServer.clients.forEach((client) => {
     console.log('client message incoming...');
     const parsedMessage = JSON.parse(message);
