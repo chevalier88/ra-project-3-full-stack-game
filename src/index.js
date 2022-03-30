@@ -3,7 +3,8 @@ import 'bootstrap';
 
 // all clients are null userType initially
 let userType;
-
+const isHost = false;
+const name = null;
 // instantiate containers for querying
 const messageContainer = document.querySelector('#message-box');
 const infoContainer = document.querySelector('#info-container');
@@ -18,11 +19,20 @@ messageContainer.innerHTML = 'Welcome to Crowds Against Humanity!';
 //   messageContainer.innerHTML = 'connected!';
 // };
 
-// broadcast webserver messages upon events like joining
+// broadcast webserver messages upon events like joining or disconnecting
 ws.onmessage = function (e) {
   console.log('received new message...');
-  const message = e.data;
-  messageContainer.innerHTML = message;
+  const message = JSON.parse(e.data);
+  if (message.type === 'status_message') {
+    // parse and view the websocket message display for all
+    messageContainer.innerHTML = message.text;
+    // restore buttons for people with duplicate names
+    if (message.duplicate) {
+      playersContainer.appendChild(clientNameDiv);
+      buttonsContainer.appendChild(connectAsSpectatorButton);
+      buttonsContainer.appendChild(connectAsPlayerButton);
+    }
+  }
 };
 
 // as soon as you join, connect to socket and give clients
