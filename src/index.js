@@ -24,7 +24,7 @@ ws.onmessage = function (e) {
   console.log('received new message...');
   const message = JSON.parse(e.data);
   if (message.type === 'status_message') {
-    // parse and view the websocket message display for all
+    // parse and view the websocket message display for all to see
     messageContainer.innerHTML = message.text;
     // restore buttons for people with duplicate names
     if (message.duplicate) {
