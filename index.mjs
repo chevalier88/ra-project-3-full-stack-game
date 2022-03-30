@@ -7,7 +7,6 @@ import bindRoutes from './routes.mjs';
 
 // Initialise Express instance
 const app = express();
-// expressWs(app);
 
 // Set the Express view engine to expect EJS templates
 app.set('view engine', 'ejs');
@@ -26,14 +25,14 @@ app.use(express.json());
 // Expose the files stored in the distribution folder
 app.use(express.static('dist'));
 
-const PORT = process.env.PORT || 3009;
+bindRoutes(app);
 
-// build the websocket
+const PORT = process.env.PORT || 3007;
 
-// special JS page. Include the webpack main.html file
-app.get('/', (request, response) => {
-  response.sendFile(resolve('dist', 'main.html'));
-});
+// // special JS page. Include the webpack main.html file
+// app.get('/', (request, response) => {
+//   response.sendFile(resolve('dist', 'main.html'));
+// });
 
 app.listen(PORT);
 console.log(`http server listening on ${PORT}`);

@@ -48,14 +48,26 @@ function joinAsSpectator() {
   connectAsSpectatorButton.remove();
 }
 
+function disconnectSocket() {
+  console.log('disconnecting from Websocket server!');
+  messageContainer.innerHTML = 'you have disconnected!';
+  ws.close();
+  connectAsPlayerButton.remove();
+  connectAsSpectatorButton.remove();
+  playersContainer.appendChild(clientNameInput);
+  playersContainer.appendChild(clientNameLabel);
+
+  buttonsContainer.appendChild(disconnectButton);
+  buttonsContainer.appendChild(connectAsSpectatorButton);
+  buttonsContainer.appendChild(connectAsPlayerButton);
+}
+
 const clientNameLabel = document.createElement('label');
 clientNameLabel.setAttribute('for', 'client');
 clientNameLabel.textContent = 'Enter Your Name:  ';
-playersContainer.appendChild(clientNameLabel);
 
 const clientNameInput = document.createElement('input');
 clientNameInput.setAttribute('id', 'client');
-playersContainer.appendChild(clientNameInput);
 
 // // start game button
 // const enterPlayerButton = document.createElement('button');
@@ -69,11 +81,20 @@ connectAsSpectatorButton.setAttribute('id', 'join-as-spectator-button');
 connectAsSpectatorButton.setAttribute('type', 'submit');
 connectAsSpectatorButton.setAttribute('for', 'client');
 connectAsSpectatorButton.innerText = 'Join as Spectator';
-buttonsContainer.appendChild(connectAsSpectatorButton);
 
 const connectAsPlayerButton = document.createElement('button');
 connectAsPlayerButton.addEventListener('click', joinAsPlayer);
 connectAsPlayerButton.setAttribute('id', 'join-as-player-button');
 connectAsPlayerButton.setAttribute('for', 'client');
 connectAsPlayerButton.innerText = 'Join as Player';
-buttonsContainer.appendChild(connectAsPlayerButton);
+
+const disconnectButton = document.createElement('button');
+disconnectButton.addEventListener('click', disconnectSocket);
+disconnectButton.setAttribute('id', 'disconnect-button');
+disconnectButton.innerText = 'Disconnect';
+
+const connectButton = document.createElement('button');
+connectButton.addEventListener('click', connectWebsocket);
+connectButton.setAttribute('id', 'connect-button');
+connectButton.innerText = 'Connect';
+buttonsContainer.appendChild(connectButton);

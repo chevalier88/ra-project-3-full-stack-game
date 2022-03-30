@@ -24,6 +24,7 @@ websocketServer.on('connection', (webSocketClient) => {
   // }));
 
   websocketServer.clients.forEach((client) => {
+    console.log(`${websocketServer.clients.size} client(s) connecting!`);
     client.send(JSON.stringify({
       connection: 'ok',
       no_of_clients: websocketServer.clients.size,

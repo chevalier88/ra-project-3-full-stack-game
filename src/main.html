@@ -35,7 +35,14 @@
       const buttonsContainer = document.querySelector('#buttons-container');
       const playersContainer = document.querySelector('#players-container');
 
-      let ws = new WebSocket('ws://localhost:3010');
+      const ws = new WebSocket('ws://localhost:3010');
+
+      function connectWebsocket(){
+        const ws = new WebSocket('ws://localhost:3010');
+        console.log("connecting to websocket server!")
+      }
+
+      connectWebsocket()
     </script>
   </body>
 </html>
