@@ -3,6 +3,7 @@ import http from 'http';
 import express from 'express';
 
 import { WebSocketServer } from 'ws';
+import { parse } from 'path';
 
 const serverPort = 3010;
 
@@ -51,16 +52,25 @@ websocketServer.on('connection', (webSocketClient) => {
         console.log(clientsHashKey.players.includes(parsedMessage.name));
         clientsHashKey.spectators.push(parsedMessage.name);
         console.log(clientsHashKey);
-        // send the status message that we have a new spectator
+        // send the status message that we have a new spectator to that client
         webSocketClient.send(JSON.stringify({
           type: 'status_message',
-          text: `a new SPECTATOR, ${parsedMessage.name} has joined!
-        ${websocketServer.clients.size} clients have joined,
-        with ${Object.keys(clientsHashKey.spectators).length} spectators, and 
-        with ${Object.keys(clientsHashKey.players).length} players so far!
-        players: ${clientsHashKey.players}
-        spectators: ${clientsHashKey.spectators}`,
+          spectator_join: true,
+          name: parsedMessage.name,
+          text: 'you joined as a spectator',
         }));
+        // tell everyone who joined about this new spectator
+        websocketServer.clients.forEach((client) => {
+          client.send(JSON.stringify({
+            type: 'status_message',
+            text: `a new SPECTATOR, ${parsedMessage.name} has joined!
+            ${websocketServer.clients.size} clients have joined,
+            with ${Object.keys(clientsHashKey.spectators).length} spectators, and 
+            with ${Object.keys(clientsHashKey.players).length} players so far!
+            players: ${clientsHashKey.players}
+            spectators: ${clientsHashKey.spectators}`,
+          }));
+        });
         // if logging in as player, push that name into the hash key again, if name is unique.
       } else if ((parsedMessage.user_type === 'player') && (clientsHashKey.spectators.includes(parsedMessage.name) === false) && (clientsHashKey.players.includes(parsedMessage.name) === false)) {
         console.log('checking for duplicates...');
@@ -68,16 +78,25 @@ websocketServer.on('connection', (webSocketClient) => {
         console.log(clientsHashKey.players.includes(parsedMessage.name));
         clientsHashKey.players.push(parsedMessage.name);
         console.log(clientsHashKey);
-        // send the status message that we have a new player
+        // send the status message that we have a new unique player to that client
         webSocketClient.send(JSON.stringify({
           type: 'status_message',
-          text: `a new PLAYER, ${parsedMessage.name} has joined!
+          player_join: true,
+          name: parsedMessage.name,
+          text: 'you joined as a player',
+        }));
+        // tell everyone who joined about this new player
+        websocketServer.clients.forEach((client) => {
+          client.send(JSON.stringify({
+            type: 'status_message',
+            text: `a new PLAYER, ${parsedMessage.name} has joined!
           ${websocketServer.clients.size} clients have joined,
           with ${Object.keys(clientsHashKey.spectators).length} spectators, and 
           with ${Object.keys(clientsHashKey.players).length} players so far!
           players: ${clientsHashKey.players}
           spectators: ${clientsHashKey.spectators}`,
-        }));
+          }));
+        });
 
         // because this is a real-time app, we cannot have everyone making axios requests.
         // so i artificially render the first player who joins the game as the game host.
@@ -89,6 +108,7 @@ websocketServer.on('connection', (webSocketClient) => {
           const makePlayerHost = {
             type: 'status_message',
             host_enabler: true,
+            text: `${parsedMessage.name}, you are the DB host!`,
           };
           webSocketClient.send(JSON.stringify(makePlayerHost));
         }

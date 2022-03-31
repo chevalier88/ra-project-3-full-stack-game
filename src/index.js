@@ -2,9 +2,10 @@ import axios from 'axios';
 import 'bootstrap';
 
 // all clients are null userType initially
-let userType;
-const isHost = false;
-const name = null;
+let isHost = false;
+let isPlayer = false; // if you're not a player you are a spectator by default
+
+let name = null;
 // instantiate containers for querying
 const messageContainer = document.querySelector('#message-box');
 const infoContainer = document.querySelector('#info-container');
@@ -26,11 +27,26 @@ ws.onmessage = function (e) {
   if (message.type === 'status_message') {
     // parse and view the websocket message display for all to see
     messageContainer.innerHTML = message.text;
-    // restore buttons for people with duplicate names
+    // restore buttons for people with duplicate names to pick a new name
     if (message.duplicate) {
       playersContainer.appendChild(clientNameDiv);
       buttonsContainer.appendChild(connectAsSpectatorButton);
       buttonsContainer.appendChild(connectAsPlayerButton);
+    } if (message.host_enabler) {
+      console.log("you're the host player!");
+      console.log(`isHost = ${isHost}`);
+      isHost = true;
+    } if (message.player_join) {
+      console.log("you're a unique player!");
+      console.log(`isPlayer = ${isPlayer}`);
+      isPlayer = true;
+      name = message.name;
+      console.log(`name: ${name}`);
+    } if (message.spectator_join) {
+      console.log("you're a unique spectator!");
+      console.log(`isPlayer = ${isPlayer}`);
+      name = message.name;
+      console.log(`name: ${name}`);
     }
   }
 };
@@ -39,7 +55,7 @@ ws.onmessage = function (e) {
 // the right to disconnect
 function disconnectSocket() {
   console.log('disconnecting from Websocket server!');
-  messageContainer.innerHTML = 'you have disconnected!';
+  messageContainer.innerHTML = 'you have disconnected! hit F5 to reconnect...';
 
   // if you're a player and you disconnect, it impacts whether the game can begin.
   // so if you disconnect, the websocket server needs to know.
@@ -48,18 +64,17 @@ function disconnectSocket() {
   }
   ws.close();
   disconnectButton.remove();
-  // connectAsPlayerButton.remove();
-  // connectAsSpectatorButton.remove();
+  connectAsPlayerButton.remove();
+  connectAsSpectatorButton.remove();
 }
 
 // user decides whether a player or a spectator
 // join as a player and record the player state on the websocket server
 function joinAsPlayer() {
-  console.log("you're a player, playa");
-  userType = 'player';
+  console.log("you're asking to be a player...");
   const playerJoinMessage = {
     type: 'player_type_input',
-    user_type: userType,
+    user_type: 'player',
     name: clientNameInput.value,
   };
   console.log(playerJoinMessage);
@@ -70,11 +85,10 @@ function joinAsPlayer() {
 
 // join as a spectator and record the spectator state on the ws server
 function joinAsSpectator() {
-  console.log("you're a spectator, casul");
-  userType = 'spectator';
+  console.log("you're asking to be a spectator...");
   const spectatorJoinMessage = {
     type: 'player_type_input',
-    user_type: userType,
+    user_type: 'spectator',
     name: clientNameInput.value,
   };
   console.log(spectatorJoinMessage);
