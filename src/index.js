@@ -1,6 +1,7 @@
 import axios from 'axios';
 import 'bootstrap';
 import { linebreak } from './helperFunctions.js';
+import './styles.scss';
 
 // all clients are null userType initially with no name
 let isHost = false;

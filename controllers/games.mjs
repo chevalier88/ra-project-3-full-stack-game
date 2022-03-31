@@ -117,6 +117,8 @@ export default function initGamesController(db) {
       // dont include the deck so the user can't cheat
       response.send({
         id: game.id,
+        blackDeck: game.gameState.shuffledBlackDeck,
+        whiteDeck: game.gameState.shuffledWhiteDeck,
         player1Hand: game.gameState.player1Hand,
         player2Hand: game.gameState.player2Hand,
         player3Hand: game.gameState.player3Hand,

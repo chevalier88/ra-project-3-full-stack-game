@@ -15,6 +15,8 @@ const clientsHashKey = {
   players: [],
 };
 
+let gameState = null;
+
 const
   websocketServer = new WebSocketServer({ server });
 
@@ -134,9 +136,9 @@ websocketServer.on('connection', (webSocketClient) => {
       }
       // takes gameState and readies it for broadcasting
     } else if (parsedMessage.type === 'current_game_input') {
-      console.log(parsedMessage.gameState.player1Hand);
-      console.log(parsedMessage.gameState.player2Hand);
-      console.log(parsedMessage.gameState.player3Hand);
+      console.log('confirming gameState...');
+      gameState = parsedMessage.game_state;
+      console.log(gameState);
     }
   });
 
