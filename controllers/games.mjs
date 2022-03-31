@@ -78,12 +78,14 @@ export default function initGamesController(db) {
 
     const player1Hand = [];
     const player2Hand = [];
+    const player3Hand = [];
     let dealerHand = [];
 
     // pop ten cards from shuffled deck into each player's hand
     for (let i = 0; i < 10; i++) {
       player1Hand.push(shuffledWhiteDeck.pop());
       player2Hand.push(shuffledWhiteDeck.pop());
+      player3Hand.push(shuffledWhiteDeck.pop());
     }
 
     console.log('printing player1Hand...');
@@ -99,6 +101,7 @@ export default function initGamesController(db) {
         shuffledBlackDeck,
         player1Hand,
         player2Hand,
+        player3Hand,
         dealerHand,
       },
     };
@@ -116,6 +119,7 @@ export default function initGamesController(db) {
         id: game.id,
         player1Hand: game.gameState.player1Hand,
         player2Hand: game.gameState.player2Hand,
+        player3Hand: game.gameState.player3Hand,
         dealerHand: game.gameState.dealerHand,
       });
     } catch (error) {

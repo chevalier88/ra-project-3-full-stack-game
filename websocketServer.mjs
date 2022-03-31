@@ -111,6 +111,18 @@ websocketServer.on('connection', (webSocketClient) => {
             text: `${parsedMessage.name}, you are the DB host!`,
           };
           webSocketClient.send(JSON.stringify(makePlayerHost));
+          // the game can begin if you have 3 players.
+          // tell everyone when the game can begin.
+        } if (clientsHashKey.players.length === 3) {
+          console.log('game can begin, spawning buttons for host player to start game...');
+          const enableStartGame = {
+            type: 'game_message',
+            can_start_game: true,
+            text: '3 players detected! awaiting Host player to create game...',
+          };
+          websocketServer.clients.forEach((client) => {
+            client.send(JSON.stringify(enableStartGame));
+          });
         }
       } else {
         console.log('duplicate detected!');
@@ -120,16 +132,21 @@ websocketServer.on('connection', (webSocketClient) => {
           text: 'sorry, this name has already been picked! please pick another unique name!',
         }));
       }
+      // takes gameState and readies it for broadcasting
+    } else if (parsedMessage.type === 'current_game_input') {
+      console.log(parsedMessage.gameState.player1Hand);
+      console.log(parsedMessage.gameState.player2Hand);
+      console.log(parsedMessage.gameState.player3Hand);
     }
   });
 
   // process messages meant for all websocket users
-  webSocketClient.on('message', (message) => { websocketServer.clients.forEach((client) => {
-    console.log('client message incoming...');
-    const parsedMessage = JSON.parse(message);
-    console.log(parsedMessage);
-  });
-  });
+  // webSocketClient.on('message', (message) => { websocketServer.clients.forEach((client) => {
+  //   console.log('client message incoming...');
+  //   const parsedMessage = JSON.parse(message);
+  //   console.log(parsedMessage);
+  // });
+  // });
 });
 server.listen(serverPort, () => {
   console.log(clientsHashKey);
