@@ -15,6 +15,10 @@ const clientsHashKey = {
   players: [],
 };
 
+let currentSubmissions = [];
+
+const currentVotes = [];
+
 let gameState = null;
 
 const
@@ -171,16 +175,43 @@ websocketServer.on('connection', (webSocketClient) => {
       console.log(gameState);
       // send everyone back this updated game state
       sendToAllClients(gameState);
+      // takes submitted cards and amends the gameState accordingly
+    } else if (parsedMessage.type === 'card_submit') {
+      console.log('1 card submitted!');
+      currentSubmissions.push(parsedMessage);
+      console.log(`${currentSubmissions.length} cards submitted so far...`);
+      if (currentSubmissions.length === 3) {
+        console.log('all cards this round were submitted!');
+        console.log('turning this to a popularity contest...');
+        console.log('reminding ourselves what gameState is like...');
+        console.log(gameState);
+        const votingRoundMessage = {
+          type: 'game_message',
+          can_vote: true,
+          cards_submitted: currentSubmissions,
+          text: 'SPECTATORS, time to vote for the funniest card! Which White card is the best answer?',
+        };
+        sendToAllClients(votingRoundMessage);
+        currentSubmissions = [];
+      }
+    } else if (parsedMessage.type === 'card_vote') {
+      currentVotes.push(parsedMessage);
+      console.log('checking out the votes so far...');
+      console.log(currentVotes);
+      const broadcastOneVote = {
+        type: 'game_message',
+        vote_broadcast: true,
+        name: parsedMessage.name,
+      };
+      sendToAllClients(broadcastOneVote);
+      if (clientsHashKey.spectators.length === currentVotes.length) {
+        console.log('all votes are in!');
+        // check for the highest number of votes
+
+        // if there is a tie, roll a dice to determine the winner using Math.random
+      }
     }
   });
-
-  // process messages meant for all websocket users
-  // webSocketClient.on('message', (message) => { websocketServer.clients.forEach((client) => {
-  //   console.log('client message incoming...');
-  //   const parsedMessage = JSON.parse(message);
-  //   console.log(parsedMessage);
-  // });
-  // });
 });
 server.listen(serverPort, () => {
   console.log(clientsHashKey);

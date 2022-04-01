@@ -7,12 +7,16 @@ import './styles.scss';
 let isHost = false;
 let isPlayer = false; // if you're not a player you are a spectator by default
 let name = null;
-
+let canVote = true;
 // we build an empty currentGame
 let currentGame = null;
 
 // we build an empty submission array
 let cardToSubmit = {};
+let cardVoted = null;
+
+let voteTracker = null;
+
 // canSelect logic is similar to canClick to prevent clicking more than 1 card
 let canSelect = true;
 
@@ -25,7 +29,8 @@ const loggedInContainer = document.querySelector('#users-logged-in');
 const playArea = document.querySelector('#play-area');
 const dealerArea = document.querySelector('#dealer-area');
 const playerHandArea = document.querySelector('#your-hand');
-// const findClientDiv = document.getElementById('client-input');
+const submissionArea = document.querySelector('#submission-area');
+
 // initial welcome message
 messageBox.innerHTML = 'Welcome to Crowds Against Humanity!';
 
@@ -135,11 +140,13 @@ ws.onmessage = function (e) {
             singleStackedCard.classList.remove('light-cah');
             singleStackedCard.classList.add('card-selected');
             cardToSubmit = {
+              type: 'card_submit',
               name,
               card_text: card,
             };
             console.log('printing card to submit...');
             console.log(cardToSubmit);
+            singleStackedCard.appendChild(submitCardButton);
           }
           // If it's already been selected, and you deselect, make sure that
           // doesn't get swapped and the cardsToSubmit logic accounts for this
@@ -148,14 +155,70 @@ ws.onmessage = function (e) {
             console.log('deselecting');
             singleStackedCard.classList.remove('card-selected');
             singleStackedCard.classList.add('light-cah');
-            cardToSubmit = {};
-            console.log('printing card to submit...');
-            console.log(cardToSubmit);
+            cardVoted = null;
+            console.log('printing card to vote...');
+            console.log(cardVoted);
+            submitCardButton.remove();
           }
         });
       });
       // tell people what to do in the websocket message box
       messageBox.innerHTML = message.broadcastMessage;
+    } else if (message.can_vote) {
+      canSelect = true;
+      messageBox.innerHTML = message.text;
+
+      // save the voting state
+      voteTracker = message.cards_submitted;
+      console.log('showing initial voteTracker state...');
+      console.log(voteTracker);
+
+      submissionArea.innerHTML = 'popularity contest underway! Only SPECTATORS can vote...';
+      // show everyone the submissions!
+      message.cards_submitted.forEach((card) => {
+        const singleStackedCard = document.createElement('div');
+        singleStackedCard.setAttribute('class', 'col light-cah card-cah');
+        singleStackedCard.setAttribute('id', `${card.name}`);
+        const whitePara = document.createElement('p');
+        whitePara.setAttribute('class', 'text-cah');
+        const whiteText = document.createTextNode(card.card_text);
+
+        whitePara.appendChild(whiteText);
+        singleStackedCard.appendChild(whitePara);
+
+        playerHandArea.appendChild(singleStackedCard);
+        // only spectators can vote!
+        singleStackedCard.addEventListener('click', (event) => {
+          console.log(`card clicked is ${card}`);
+          if (singleStackedCard.getAttribute('class').includes('light-cah') && canSelect && isPlayer === false && canVote) {
+            canSelect = false;
+            singleStackedCard.classList.remove('light-cah');
+            singleStackedCard.classList.add('card-selected');
+            cardVoted = {
+              type: 'card_vote',
+              name: card.name,
+              card_text: card.card_text,
+            };
+            console.log('printing card to vote...');
+            console.log(cardVoted);
+            singleStackedCard.appendChild(submitVoteButton);
+          }
+          // If it's already been selected, and you deselect, make sure that
+          // doesn't get swapped and the cardsToSubmit logic accounts for this
+          else if (canSelect === false && (singleStackedCard.getAttribute('class').includes('card-selected')) && canVote) {
+            canSelect = true;
+            console.log('deselecting');
+            singleStackedCard.classList.remove('card-selected');
+            singleStackedCard.classList.add('light-cah');
+            cardToSubmit = {};
+            console.log('printing card to submit...');
+            console.log(cardToSubmit);
+            submitVoteButton.remove();
+          }
+        });
+      });
+    } else if (message.vote_broadcast) {
+      console.log(`${message.name} just got voted!`);
     }
   }
 };
@@ -231,6 +294,21 @@ function createGame() {
     });
 }
 
+function submitCard() {
+  console.log('submitting card!');
+  ws.send(JSON.stringify(cardToSubmit));
+  submitCardButton.remove();
+  playerHandArea.innerHTML = '';
+  submissionArea.innerHTML = `${name}, your card was submitted!`;
+}
+
+function voteCard() {
+  console.log('submitting vote!');
+  ws.send(JSON.stringify(cardVoted));
+  canVote = false; // prevents double voting.
+  submitVoteButton.remove();
+}
+
 // name entry Div
 const clientNameDiv = document.createElement('div');
 clientNameDiv.setAttribute('class', 'row text-center');
@@ -280,3 +358,17 @@ createGameButton.addEventListener('click', createGame);
 createGameButton.setAttribute('id', 'start-game-button');
 createGameButton.setAttribute('class', 'col btn btn-success btn-sm');
 createGameButton.innerText = 'Create New Game';
+
+// create submit card button DOM
+const submitCardButton = document.createElement('button');
+submitCardButton.addEventListener('click', submitCard);
+submitCardButton.setAttribute('id', 'submit-card-button');
+submitCardButton.setAttribute('class', 'col btn btn-danger btn-sm');
+submitCardButton.innerText = 'Submit This Card!';
+
+// create submit vote button DOM
+const submitVoteButton = document.createElement('button');
+submitVoteButton.addEventListener('click', voteCard);
+submitVoteButton.setAttribute('id', 'submit-vote-button');
+submitVoteButton.setAttribute('class', 'col btn btn-danger btn-sm');
+submitVoteButton.innerText = 'Vote This Card!';
