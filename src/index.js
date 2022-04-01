@@ -17,6 +17,7 @@ const infoContainer = document.querySelector('#info-container');
 const buttonsContainer = document.querySelector('#buttons-container');
 const playersContainer = document.querySelector('#players-container');
 const loggedInContainer = document.querySelector('#users-logged-in');
+const playArea = document.querySelector('#play-area');
 
 // initial welcome message
 messageBox.innerHTML = 'Welcome to Crowds Against Humanity!';
@@ -62,10 +63,12 @@ ws.onmessage = function (e) {
           console.log('printing response.data response...');
           console.log(response.data);
           loggedInContainer.textContent = response.data;
+          name = data.message.name;
         })
         .catch((error) => {
           console.log(error);
         });
+      console.log(`your player name: ${name}`);
       // records you as spectator
     } if (message.spectator_join) {
       console.log("you're a unique spectator!");
@@ -82,6 +85,8 @@ ws.onmessage = function (e) {
     if (message.can_start_game && isHost) {
       console.log('you are the host and the game can begin, wanna start it?');
       buttonsContainer.appendChild(createGameButton);
+    } else if (message.gameStage === 'fresh_game_deal') {
+      console.log('building play area...');
     }
   }
 };
@@ -178,6 +183,7 @@ connectAsSpectatorButton.addEventListener('click', joinAsSpectator);
 connectAsSpectatorButton.setAttribute('id', 'join-as-spectator-button');
 connectAsSpectatorButton.setAttribute('type', 'submit');
 connectAsSpectatorButton.setAttribute('for', 'client');
+connectAsSpectatorButton.setAttribute('class', 'col btn btn-secondary btn-sm');
 connectAsSpectatorButton.innerText = 'Join as Spectator';
 
 // connect as a player button DOM
@@ -185,6 +191,7 @@ const connectAsPlayerButton = document.createElement('button');
 connectAsPlayerButton.addEventListener('click', joinAsPlayer);
 connectAsPlayerButton.setAttribute('id', 'join-as-player-button');
 connectAsPlayerButton.setAttribute('for', 'client');
+connectAsPlayerButton.setAttribute('class', 'col btn btn-primary btn-sm');
 connectAsPlayerButton.innerText = 'Join as Player';
 
 buttonsContainer.appendChild(connectAsSpectatorButton);
@@ -194,6 +201,7 @@ buttonsContainer.appendChild(connectAsPlayerButton);
 const disconnectButton = document.createElement('button');
 disconnectButton.addEventListener('click', disconnectSocket);
 disconnectButton.setAttribute('id', 'disconnect-button');
+disconnectButton.setAttribute('class', 'col btn btn-danger btn-sm');
 disconnectButton.innerText = 'Disconnect';
 buttonsContainer.appendChild(disconnectButton);
 
@@ -201,4 +209,10 @@ buttonsContainer.appendChild(disconnectButton);
 const createGameButton = document.createElement('button');
 createGameButton.addEventListener('click', createGame);
 createGameButton.setAttribute('id', 'start-game-button');
+createGameButton.setAttribute('class', 'col btn btn-success btn-sm');
 createGameButton.innerText = 'Create New Game';
+
+// create card Container DOM
+const cardContainer = document.createElement('div');
+cardContainer.setAttribute('class', 'cardContainer');
+playArea.appendChild(cardContainer);

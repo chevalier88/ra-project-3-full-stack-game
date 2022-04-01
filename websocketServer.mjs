@@ -20,6 +20,13 @@ let gameState = null;
 const
   websocketServer = new WebSocketServer({ server });
 
+// shortcut function to send JSONs to everyone
+function sendToAllClients(object) {
+  websocketServer.clients.forEach((client) => {
+    client.send(JSON.stringify(object));
+  });
+}
+
 websocketServer.on('connection', (webSocketClient) => {
   websocketServer.clients.forEach((client) => {
     console.log(`${websocketServer.clients.size} client(s) connecting!`);
@@ -138,7 +145,30 @@ websocketServer.on('connection', (webSocketClient) => {
     } else if (parsedMessage.type === 'current_game_input') {
       console.log('confirming gameState...');
       gameState = parsedMessage.game_state;
+      console.log(clientsHashKey);
+      // change the playerHands to the names of the players in our Websocket Server
+      gameState[clientsHashKey.players[0]] = gameState.player1Hand;
+      gameState[clientsHashKey.players[1]] = gameState.player2Hand;
+      gameState[clientsHashKey.players[2]] = gameState.player3Hand;
+      gameState[`${clientsHashKey.players[0]}Submit`] = gameState.player1Submit;
+      gameState[`${clientsHashKey.players[1]}Submit`] = gameState.player2Submit;
+      gameState[`${clientsHashKey.players[2]}Submit`] = gameState.player3Submit;
+      // delete the old keys
+      delete gameState.player1Hand;
+      delete gameState.player2Hand;
+      delete gameState.player3Hand;
+      delete gameState.player1Submit;
+      delete gameState.player2Submit;
+      delete gameState.player3Submit;
+      // make identifier keys so that websockets understands what to do next with Front End
+      gameState.type = 'game_message';
+      gameState.gameStage = 'fresh_game_deal';
+      // checking game state again
+      console.log('checking modified gameState again...');
+      console.log(gameState.player1Hand);
       console.log(gameState);
+      // send everyone back this updated game state
+      sendToAllClients(gameState);
     }
   });
 

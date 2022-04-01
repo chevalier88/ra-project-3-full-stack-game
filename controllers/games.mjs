@@ -79,6 +79,10 @@ export default function initGamesController(db) {
     const player1Hand = [];
     const player2Hand = [];
     const player3Hand = [];
+    const player1Submit = [];
+    const player2Submit = [];
+    const player3Submit = [];
+    const winnersByRound = [];
     let dealerHand = [];
 
     // pop ten cards from shuffled deck into each player's hand
@@ -100,9 +104,13 @@ export default function initGamesController(db) {
         shuffledWhiteDeck,
         shuffledBlackDeck,
         player1Hand,
+        player1Submit,
         player2Hand,
+        player2Submit,
         player3Hand,
+        player3Submit,
         dealerHand,
+        winnersByRound,
       },
     };
 
@@ -119,9 +127,14 @@ export default function initGamesController(db) {
         id: game.id,
         blackDeck: game.gameState.shuffledBlackDeck,
         whiteDeck: game.gameState.shuffledWhiteDeck,
+        // players' names will be replaced
         player1Hand: game.gameState.player1Hand,
+        player1Submit: game.gameState.player1Submit,
         player2Hand: game.gameState.player2Hand,
+        player2Submit: game.gameState.player1Submit,
         player3Hand: game.gameState.player3Hand,
+        player3Submit: game.gameState.player3Submit,
+        winnersByRound: game.gameState.winnersByRound,
         dealerHand: game.gameState.dealerHand,
       });
     } catch (error) {
