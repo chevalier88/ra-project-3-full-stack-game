@@ -121,7 +121,6 @@ export default function initGamesController(db) {
         id: game.id,
         blackDeck: game.gameState.shuffledBlackDeck,
         whiteDeck: game.gameState.shuffledWhiteDeck,
-        // players' names will be replaced
         player1Hand: game.gameState.player1Hand,
         player2Hand: game.gameState.player2Hand,
         player3Hand: game.gameState.player3Hand,
@@ -132,20 +131,7 @@ export default function initGamesController(db) {
       response.status(500).send(error);
     }
   };
-  // const updateRoundWinner = async (request, response) => {
-  //   try {
-  //     // get the game by the ID passed in the request
-  //     const game = await db.Game.findByPk(request.params.id);
-  //     await game.update({
-  //       gameState: {
-  //         roundWinners: request.body.gameState.roundWinners,
-  //       },
-  //     });
-  //   } catch (error) {
-  //     response.status(500).send(error);
-  //   }
-  // };
-  // deal two new cards from the deck.
+
   const deal = async (request, response) => {
     try {
       // get the game by the ID passed in the request
@@ -156,13 +142,17 @@ export default function initGamesController(db) {
 
       const player1Hand = [];
       const player2Hand = [];
+      const player3Hand = [];
+      const roundWinners = [];
+      let dealerHand = [];
 
       // make changes to the object
       for (let i = 0; i < 10; i++) {
         player1Hand.push(game.gameState.shuffledWhiteDeck.pop());
         player2Hand.push(game.gameState.shuffledWhiteDeck.pop());
+        player3Hand.push(game.gameState.shuffledWhiteDeck.pop());
       }
-      const dealerHand = game.gameState.shuffledBlackDeck.pop();
+      dealerHand = game.gameState.shuffledBlackDeck.pop();
 
       // update the game with the new info
       await game.update({
@@ -171,7 +161,9 @@ export default function initGamesController(db) {
           shuffledBlackDeck: game.gameState.shuffledBlackDeck,
           player1Hand,
           player2Hand,
+          player3Hand,
           dealerHand,
+          roundWinners,
         },
 
       });
@@ -183,8 +175,12 @@ export default function initGamesController(db) {
       response.cookie('gameId', game.id);
       response.send({
         id: game.id,
+        blackDeck: game.gameState.shuffledBlackDeck,
+        whiteDeck: game.gameState.shuffledWhiteDeck,
         player1Hand: game.gameState.player1Hand,
         player2Hand: game.gameState.player2Hand,
+        player3Hand: game.gameState.player3Hand,
+        roundWinners: game.gameState.roundWinners,
         dealerHand: game.gameState.dealerHand,
       });
     } catch (error) {

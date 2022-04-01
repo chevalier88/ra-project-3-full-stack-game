@@ -3,11 +3,12 @@ import db from './models/index.mjs';
 
 import initPlayersController from './controllers/players.mjs';
 import initGamesController from './controllers/games.mjs';
+import initWinnersController from './controllers/winners.mjs';
 
 export default function bindRoutes(app) {
   const PlayersController = initPlayersController(db);
   const GamesController = initGamesController(db);
-
+  const WinnersController = initWinnersController(db);
   // special JS page. Include the webpack main.html file
   app.get('/', (request, response) => {
     response.sendFile(resolve('dist', 'main.html'));
@@ -18,7 +19,7 @@ export default function bindRoutes(app) {
   // create a new game
   app.post('/games', GamesController.create);
   // update a game with a round's winner
-  // app.put('/games/:id/update_winner', GamesController.updateRoundWinner);
+  app.post('/winner', WinnersController.createWin);
   // update a game with new cards
   app.put('/games/:id/deal', GamesController.deal);
 }

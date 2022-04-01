@@ -102,6 +102,10 @@ ws.onmessage = function (e) {
       buttonsContainer.appendChild(createGameButton);
       // this happens after the host player creates the game. game begins!
     } else if (message.gameStage === 'fresh_game_deal') {
+      dealerArea.innerHTML = '';
+      submissionArea.innerHTML = '';
+      playerHandArea.innerHTML = '';
+      canVote = true;
       console.log('building play area...');
       // build the dealer's dark card. you'll only ever see 1 of these per round
       const darkCard = document.createElement('div');
@@ -244,16 +248,10 @@ ws.onmessage = function (e) {
       alert(message.text);
       currentGame.roundWinners.push(message.name);
       console.log(currentGame.roundWinners);
-      console.log('just printed current game to remind ourselves what is up!');
-      const data = {
-        game_id: currentGame.id,
-        winner_name: message.name,
-      };
-      // trying to post the updated winner into the back end
+      console.log('just printed current game winners to remind ourselves what is up!');
       if (isHost) {
-        // push round winners somewhere
-        console.log(currentGame.roundWinners);
-        console.log(Object.keys(currentGame));
+        // time to deal a new hand, only the host sees this
+        buttonsContainer.appendChild(dealNewHandButton);
       }
     }
   }
@@ -345,6 +343,28 @@ function voteCard() {
   submitVoteButton.remove();
 }
 
+const dealCards = function () {
+  dealNewHandButton.remove();
+  canSelect = true;
+  axios.put(`/games/${currentGame.id}/deal`)
+    .then((response) => {
+      // get the updated hand value
+      currentGame = response.data;
+      console.log('printing currentGame...');
+      console.log(currentGame);
+      console.log('sending currentGame to websocket server...');
+      const hostCurrentGameMessage = {
+        type: 'current_game_input',
+        game_state: currentGame,
+      };
+      ws.send(JSON.stringify(hostCurrentGameMessage));
+    })
+    .catch((error) => {
+      // handle error
+      console.log(error);
+    });
+};
+
 // name entry Div
 const clientNameDiv = document.createElement('div');
 clientNameDiv.setAttribute('class', 'row text-center');
@@ -408,3 +428,10 @@ submitVoteButton.addEventListener('click', voteCard);
 submitVoteButton.setAttribute('id', 'submit-vote-button');
 submitVoteButton.setAttribute('class', 'col btn btn-danger btn-sm');
 submitVoteButton.innerText = 'Vote This Card!';
+
+// create deal fresh hand button DOM
+const dealNewHandButton = document.createElement('button');
+dealNewHandButton.addEventListener('click', dealCards);
+dealNewHandButton.setAttribute('id', 'deal-cards-button');
+dealNewHandButton.setAttribute('class', 'col btn btn-success btn-sm');
+dealNewHandButton.innerText = 'Deal New Hand';

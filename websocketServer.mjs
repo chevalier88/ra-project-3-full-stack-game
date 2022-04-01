@@ -67,7 +67,8 @@ websocketServer.on('connection', (webSocketClient) => {
         with ${Object.keys(clientsHashKey.spectators).length} spectators, and\n  
         with ${Object.keys(clientsHashKey.players).length} players so far!\n
         players: ${clientsHashKey.players}\n
-        spectators: ${clientsHashKey.spectators}`,
+        spectators: ${clientsHashKey.spectators}
+        NEED 3 PLAYERS and AT LEAST 3 OR MORE SPECTATORS TO START GAME`,
     }));
   });
 
@@ -106,7 +107,8 @@ websocketServer.on('connection', (webSocketClient) => {
             with ${Object.keys(clientsHashKey.spectators).length} spectators, and\n 
             with ${Object.keys(clientsHashKey.players).length} players so far!\n
             players: ${clientsHashKey.players}\n
-            spectators: ${clientsHashKey.spectators}`,
+            spectators: ${clientsHashKey.spectators}
+            NEED 3 PLAYERS and AT LEAST 3 OR MORE SPECTATORS TO START GAME`,
           }));
         });
         // if logging in as player, push that name into the hash key again, if name is unique.
@@ -132,7 +134,8 @@ websocketServer.on('connection', (webSocketClient) => {
           with ${Object.keys(clientsHashKey.spectators).length} spectators, and\n
           with ${Object.keys(clientsHashKey.players).length} players so far!\n
           players: ${clientsHashKey.players}\n
-          spectators: ${clientsHashKey.spectators}`,
+          spectators: ${clientsHashKey.spectators}
+          NEED 3 PLAYERS and AT LEAST 3 OR MORE SPECTATORS TO START GAME`,
           }));
         });
 
@@ -156,7 +159,7 @@ websocketServer.on('connection', (webSocketClient) => {
           const enableStartGame = {
             type: 'game_message',
             can_start_game: true,
-            text: '3 players detected! awaiting Host player to create game...',
+            text: '3 players detected! Awaiting Host player to create game...',
           };
           websocketServer.clients.forEach((client) => {
             client.send(JSON.stringify(enableStartGame));
@@ -240,7 +243,7 @@ websocketServer.on('connection', (webSocketClient) => {
         currentVotes = sortable(currentVotes);
         console.log(currentVotes);
         // check for equally dispersed votes
-        if (allAreEqual(currentVotes) === true) {
+        if (Object.keys(currentVotes).length > 1 && allAreEqual(currentVotes) === true) {
           console.log('triple tie state detected!');
           console.log('rolling a 3-sided die');
           const randomInteger = randomIntFromInterval(0, 2);
@@ -253,6 +256,7 @@ websocketServer.on('connection', (webSocketClient) => {
             text: `There was a tie with votes for all players, so we rolled a 3-sided dice and ${currentWinner} won by sheer luck!`,
           };
           sendToAllClients(broadcastWinMessage);
+          currentVotes = {}; // empty the votes out for the next loop/dealing of cards
           // check for tied votes between 2 players out of 3
         } else if (Object.values(currentVotes)[1] === Object.values(currentVotes)[2] && Object.values(currentVotes)[2] > Object.values(currentVotes)[0]) {
           console.log('double tie state detected!');
@@ -266,9 +270,10 @@ websocketServer.on('connection', (webSocketClient) => {
             text: `There was a tie with 2 players, so we flipped a coin and ${currentWinner} won by sheer luck!`,
           };
           sendToAllClients(broadcastWinMessage);
-          // clearly 1 winner by vote count
+          currentVotes = {};
+          // clearly 1 winner by vote count - if so, pick the
         } else {
-          currentWinner = Object.keys(currentVotes)[2];
+          currentWinner = Object.keys(currentVotes)[(Object.keys(currentVotes).length) - 1];
           console.log(`${currentWinner} has been voted the funniest!`);
           const broadcastWinMessage = {
             type: 'game_message',
@@ -277,6 +282,7 @@ websocketServer.on('connection', (webSocketClient) => {
             text: `${currentWinner} has the most votes and won this game!`,
           };
           sendToAllClients(broadcastWinMessage);
+          currentVotes = {};
         }
       }
     }
