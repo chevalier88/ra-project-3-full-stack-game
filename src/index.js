@@ -239,6 +239,11 @@ ws.onmessage = function (e) {
       // findVotedCardByPlayerName.appendChild(votedNumberPara);
       console.log('showing new voteTracker status...');
       console.log(voteTracker);
+      // what to tell everyone when there's a tie
+    } else if (message.winner) {
+      alert(message.text);
+      console.log(currentGame);
+      console.log('just printed current game to remind ourselves what is up');
     }
   }
 };
