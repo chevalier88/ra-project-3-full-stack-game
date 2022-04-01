@@ -11,6 +11,11 @@ let name = null;
 // we build an empty currentGame
 let currentGame = null;
 
+// we build an empty submission array
+let cardToSubmit = {};
+// canSelect logic is similar to canClick to prevent clicking more than 1 card
+let canSelect = true;
+
 // instantiate containers for querying
 const messageBox = document.querySelector('#message-box');
 const infoContainer = document.querySelector('#info-container');
@@ -122,6 +127,32 @@ ws.onmessage = function (e) {
         singleStackedCard.appendChild(whitePara);
 
         playerHandArea.appendChild(singleStackedCard);
+        // tell the game what will happen if you click a card to submit
+        singleStackedCard.addEventListener('click', (event) => {
+          console.log(`card clicked is ${card}`);
+          if (singleStackedCard.getAttribute('class').includes('light-cah') && canSelect) {
+            canSelect = false;
+            singleStackedCard.classList.remove('light-cah');
+            singleStackedCard.classList.add('card-selected');
+            cardToSubmit = {
+              name,
+              card_text: card,
+            };
+            console.log('printing card to submit...');
+            console.log(cardToSubmit);
+          }
+          // If it's already been selected, and you deselect, make sure that
+          // doesn't get swapped and the cardsToSubmit logic accounts for this
+          else if (canSelect === false && (singleStackedCard.getAttribute('class').includes('card-selected'))) {
+            canSelect = true;
+            console.log('deselecting');
+            singleStackedCard.classList.remove('card-selected');
+            singleStackedCard.classList.add('light-cah');
+            cardToSubmit = {};
+            console.log('printing card to submit...');
+            console.log(cardToSubmit);
+          }
+        });
       });
       // tell people what to do in the websocket message box
       messageBox.innerHTML = message.broadcastMessage;
