@@ -35,9 +35,9 @@ websocketServer.on('connection', (webSocketClient) => {
       type: 'status_message',
       text: `connection is ok!
         ${websocketServer.clients.size} clients have joined,
-        with ${Object.keys(clientsHashKey.spectators).length} spectators, and 
-        with ${Object.keys(clientsHashKey.players).length} players so far!
-        players: ${clientsHashKey.players}
+        with ${Object.keys(clientsHashKey.spectators).length} spectators, and\n  
+        with ${Object.keys(clientsHashKey.players).length} players so far!\n
+        players: ${clientsHashKey.players}\n
         spectators: ${clientsHashKey.spectators}`,
     }));
   });
@@ -72,11 +72,11 @@ websocketServer.on('connection', (webSocketClient) => {
         websocketServer.clients.forEach((client) => {
           client.send(JSON.stringify({
             type: 'status_message',
-            text: `a new SPECTATOR, ${parsedMessage.name} has joined!
-            ${websocketServer.clients.size} clients have joined,
-            with ${Object.keys(clientsHashKey.spectators).length} spectators, and 
-            with ${Object.keys(clientsHashKey.players).length} players so far!
-            players: ${clientsHashKey.players}
+            text: `a new SPECTATOR, ${parsedMessage.name} has joined!\n
+            ${websocketServer.clients.size} clients have joined,\n
+            with ${Object.keys(clientsHashKey.spectators).length} spectators, and\n 
+            with ${Object.keys(clientsHashKey.players).length} players so far!\n
+            players: ${clientsHashKey.players}\n
             spectators: ${clientsHashKey.spectators}`,
           }));
         });
@@ -98,11 +98,11 @@ websocketServer.on('connection', (webSocketClient) => {
         websocketServer.clients.forEach((client) => {
           client.send(JSON.stringify({
             type: 'status_message',
-            text: `a new PLAYER, ${parsedMessage.name} has joined!
-          ${websocketServer.clients.size} clients have joined,
-          with ${Object.keys(clientsHashKey.spectators).length} spectators, and 
-          with ${Object.keys(clientsHashKey.players).length} players so far!
-          players: ${clientsHashKey.players}
+            text: `a new PLAYER, ${parsedMessage.name} has joined!\n
+          ${websocketServer.clients.size} clients have joined\n
+          with ${Object.keys(clientsHashKey.spectators).length} spectators, and\n
+          with ${Object.keys(clientsHashKey.players).length} players so far!\n
+          players: ${clientsHashKey.players}\n
           spectators: ${clientsHashKey.spectators}`,
           }));
         });
@@ -163,6 +163,8 @@ websocketServer.on('connection', (webSocketClient) => {
       // make identifier keys so that websockets understands what to do next with Front End
       gameState.type = 'game_message';
       gameState.gameStage = 'fresh_game_deal';
+      // we also want to broadcast to players what to do
+      gameState.broadcastMessage = `${clientsHashKey.players[0]}, ${clientsHashKey.players[1]}, and ${clientsHashKey.players[2]}, click the funniest ${gameState.dealerHand.pick} card(s) from your hand!!`;
       // checking game state again
       console.log('checking modified gameState again...');
       console.log(gameState.player1Hand);

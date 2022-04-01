@@ -18,7 +18,9 @@ const buttonsContainer = document.querySelector('#buttons-container');
 const playersContainer = document.querySelector('#players-container');
 const loggedInContainer = document.querySelector('#users-logged-in');
 const playArea = document.querySelector('#play-area');
-
+const dealerArea = document.querySelector('#dealer-area');
+const playerHandArea = document.querySelector('#your-hand');
+// const findClientDiv = document.getElementById('client-input');
 // initial welcome message
 messageBox.innerHTML = 'Welcome to Crowds Against Humanity!';
 
@@ -49,6 +51,9 @@ ws.onmessage = function (e) {
       console.log("you're a unique player!");
       isPlayer = true;
       console.log(`isPlayer = ${isPlayer}`);
+      name = message.name;
+      console.log(`your name: ${name}`);
+      clientNameDiv.remove();
       const data = {
         name: message.name,
       };
@@ -63,7 +68,6 @@ ws.onmessage = function (e) {
           console.log('printing response.data response...');
           console.log(response.data);
           loggedInContainer.textContent = response.data;
-          name = data.message.name;
         })
         .catch((error) => {
           console.log(error);
@@ -75,6 +79,7 @@ ws.onmessage = function (e) {
       console.log(`isPlayer = ${isPlayer}`);
       name = message.name;
       console.log(`name: ${name}`);
+      clientNameDiv.remove();
     }
     // game messages become a thing when the 3-player state is achieved
     // this means the game can begin when the Websocket Server detects 3 players
@@ -85,8 +90,41 @@ ws.onmessage = function (e) {
     if (message.can_start_game && isHost) {
       console.log('you are the host and the game can begin, wanna start it?');
       buttonsContainer.appendChild(createGameButton);
+      // this happens after the host player creates the game. game begins!
     } else if (message.gameStage === 'fresh_game_deal') {
       console.log('building play area...');
+      // build the dealer's dark card. you'll only ever see 1 of these per round
+      const darkCard = document.createElement('div');
+      darkCard.setAttribute('class', 'dark-cah card-cah');
+      const cardPara = document.createElement('p');
+      cardPara.setAttribute('class', 'text-cah');
+      const cardText = document.createTextNode(message.dealerHand.text);
+      cardPara.appendChild(cardText);
+      darkCard.appendChild(cardPara);
+
+      dealerArea.appendChild(darkCard);
+
+      // build the player client's individual hand, that no one else can see but that player
+      const yourCurrentHand = message[`${name}`];
+      console.log(`this is your hand, ${name}...`);
+      console.log(yourCurrentHand);
+
+      yourCurrentHand.forEach((card) => {
+        console.log(card);
+        const singleStackedCard = document.createElement('div');
+        singleStackedCard.setAttribute('class', 'col light-cah card-cah');
+        singleStackedCard.setAttribute('id', `${card}`);
+        const whitePara = document.createElement('p');
+        whitePara.setAttribute('class', 'text-cah');
+        const whiteText = document.createTextNode(card);
+
+        whitePara.appendChild(whiteText);
+        singleStackedCard.appendChild(whitePara);
+
+        playerHandArea.appendChild(singleStackedCard);
+      });
+      // tell people what to do in the websocket message box
+      messageBox.innerHTML = message.broadcastMessage;
     }
   }
 };
@@ -142,7 +180,6 @@ function createGame() {
   console.log('creating game, dealing hands...');
   const createGameButtonAgain = document.getElementById('start-game-button');
   createGameButtonAgain.remove();
-  clientNameDiv.remove();
   // Make a request to create a new game
   axios.post('/games')
     .then((response) => {
@@ -165,7 +202,8 @@ function createGame() {
 
 // name entry Div
 const clientNameDiv = document.createElement('div');
-
+clientNameDiv.setAttribute('class', 'row text-center');
+clientNameDiv.setAttribute('id', 'client-input');
 const clientNameLabel = document.createElement('label');
 clientNameLabel.setAttribute('for', 'client');
 clientNameLabel.textContent = 'Enter Your Name:  ';
@@ -211,8 +249,3 @@ createGameButton.addEventListener('click', createGame);
 createGameButton.setAttribute('id', 'start-game-button');
 createGameButton.setAttribute('class', 'col btn btn-success btn-sm');
 createGameButton.innerText = 'Create New Game';
-
-// create card Container DOM
-const cardContainer = document.createElement('div');
-cardContainer.setAttribute('class', 'cardContainer');
-playArea.appendChild(cardContainer);

@@ -2,24 +2,20 @@ body {
   max-width: 600px;
   margin: 0 auto !important;
   float: none !important;
-  text-align: center;
+  text-align: left;
 }
 
 @import "https://fonts.googleapis.com/css?family=Droid+Sans+Mono";
-
-body {
-  background-color: black;
-}
 
 .cardContainer {
   overflow: hidden;
   margin-left: 10%;
 }
 
-.card {
+.card-cah {
   /* Card Sizing */
-  width: 2.5in;
-  height: 4in;
+  width: 1.5in;
+  height: 2.75in;
   border-radius: 0.25in;
 
   /* Display Properties */
@@ -27,26 +23,39 @@ body {
   margin: 10px;
 }
 
-.dark {
+.dark-cah {
   /* Color information */
   border: 3px solid black;
   color: white;
-  background: black;
+  background-color: black;
 }
 
-.light {
+.light-cah {
   /* Color information */
   border: 3px solid black;
   color: black;
-  background: white;
+  background-color: white;
 }
 
-.text {
+.text-cah {
   /*font information*/
   font-family: Helvetica, sans-serif;
   font-weight: bolder;
-  font-size: 26px;
+  font-size: 13px;
   padding-left: 7%;
   padding-right: 7%;
-  word-wrap: break-word;
+  word-wrap: normal;
 }
+
+.menu-cah {
+  list-style-type: none;
+}
+
+.menu-cah li:hover {
+  color: #d9d9d9;
+}
+
+// .cardstack {
+//   width: 2.5in;
+//   float: left;
+// }

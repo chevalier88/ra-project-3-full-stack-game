@@ -18,20 +18,29 @@
   </head>
 
   <body>
-    <h1> Crowds Against Humanity BASE </h1>
+    <div class = "jumbotron text-center">
+      <h1> Crowds Against Humanity BASE </h1>
+    </div>
     <div class="container-fluid" id="game-container">
       <div class="row" id="info-container">
-        <div class ="col" id = "users-logged-in"></div>
-        <div class="col" id = "message-box"></div>
+        <div class ="row text-center " id = "users-logged-in"></div>
+        <br>
+        <div class="row text-center" id = "message-box"></div>
       </div>
       <br>
-      <div class="row" id = "players-container">
+      <div class="row text-center" id = "players-container"></div>
       <br>
-      <div class = "row" id = "play-area"></div>
+      <div class ="row text-center" id = "buttons-container"></div>
+
+      <br>
+      <div class = "container-fluid cardContainer" id = "play-area">
+        <div class = row>
+          <div class = "col" id = "dealer-area"></div>
+          <div class = "col" id = "submission-area"></div>
+        </div>
+        <div class = "row" id = "your-hand"></div>
       </div>
       <br>
-      <div class ="row" id = "buttons-container">
-      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
