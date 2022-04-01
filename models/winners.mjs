@@ -13,6 +13,10 @@ export default function initWinnerModel(sequelize, DataTypes) {
       },
       gameId: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'games',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,

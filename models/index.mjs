@@ -35,7 +35,10 @@ else {
 
 db.Player = initPlayerModel(sequelize, Sequelize.DataTypes);
 db.Game = initGameModel(sequelize, Sequelize.DataTypes);
-db.Winner = initWinnerModel(sequelize.Sequelize.DataTypes);
+db.Winner = initWinnerModel(sequelize, Sequelize.DataTypes);
+
+db.Winner.belongsTo(db.Game);
+db.Game.hasMany(db.Winner);
 
 // in order for the many-to-many to work we must mention the join table here.
 db.Player.belongsToMany(db.Game, { through: 'games_players' });
