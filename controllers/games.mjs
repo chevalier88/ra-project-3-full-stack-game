@@ -132,7 +132,19 @@ export default function initGamesController(db) {
       response.status(500).send(error);
     }
   };
-
+  // const updateRoundWinner = async (request, response) => {
+  //   try {
+  //     // get the game by the ID passed in the request
+  //     const game = await db.Game.findByPk(request.params.id);
+  //     await game.update({
+  //       gameState: {
+  //         roundWinners: request.body.gameState.roundWinners,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     response.status(500).send(error);
+  //   }
+  // };
   // deal two new cards from the deck.
   const deal = async (request, response) => {
     try {

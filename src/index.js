@@ -242,8 +242,14 @@ ws.onmessage = function (e) {
       // what to tell everyone when there's a tie
     } else if (message.winner) {
       alert(message.text);
-      console.log(currentGame);
-      console.log('just printed current game to remind ourselves what is up');
+      currentGame.roundWinners.push(message.name);
+      console.log(currentGame.roundWinners);
+      console.log('just printed current game to remind ourselves what is up!');
+      const data = currentGame;
+      // trying to post the updated winner into the back end
+      if (isHost) {
+        // push round winners somewhere
+      }
     }
   }
 };
