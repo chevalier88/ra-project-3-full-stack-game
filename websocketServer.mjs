@@ -206,6 +206,8 @@ websocketServer.on('connection', (webSocketClient) => {
       sendToAllClients(broadcastOneVote);
       if (clientsHashKey.spectators.length === currentVotes.length) {
         console.log('all votes are in!');
+        console.log('seeing game state again...');
+        console.log(gameState);
         // check for the highest number of votes
 
         // if there is a tie, roll a dice to determine the winner using Math.random

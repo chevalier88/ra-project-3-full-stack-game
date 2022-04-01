@@ -77,7 +77,7 @@ ws.onmessage = function (e) {
           console.log(response);
           console.log('printing response.data response...');
           console.log(response.data);
-          loggedInContainer.textContent = response.data;
+          loggedInContainer.innerHTML = response.data;
         })
         .catch((error) => {
           console.log(error);
@@ -171,8 +171,10 @@ ws.onmessage = function (e) {
       // save the voting state
       voteTracker = message.cards_submitted;
       console.log('showing initial voteTracker state...');
+      voteTracker.forEach((candidate) => {
+        candidate.votes = 0;
+      });
       console.log(voteTracker);
-
       submissionArea.innerHTML = 'popularity contest underway! Only SPECTATORS can vote...';
       // show everyone the submissions!
       message.cards_submitted.forEach((card) => {
@@ -182,10 +184,15 @@ ws.onmessage = function (e) {
         const whitePara = document.createElement('p');
         whitePara.setAttribute('class', 'text-cah');
         const whiteText = document.createTextNode(card.card_text);
-
         whitePara.appendChild(whiteText);
         singleStackedCard.appendChild(whitePara);
 
+        // append the vote score element too
+        const votedNumberPara = document.createElement('p');
+        votedNumberPara.setAttribute('id', `${card.name}-votes`);
+        singleStackedCard.appendChild(votedNumberPara);
+
+        // append the submitted cards to the main area for voting
         playerHandArea.appendChild(singleStackedCard);
         // only spectators can vote!
         singleStackedCard.addEventListener('click', (event) => {
@@ -219,6 +226,19 @@ ws.onmessage = function (e) {
       });
     } else if (message.vote_broadcast) {
       console.log(`${message.name} just got voted!`);
+      // get the new votes from the hashKey
+      const obj = voteTracker.find((o) => o.name === `${message.name}`);
+      obj.votes += 1;
+      // update the element that shows the votes rising in the chosen cards, real-time
+      const findVotesByPlayerName = document.querySelector(`#${message.name}-votes`);
+      findVotesByPlayerName.innerHTML = obj.votes;
+      // const votedNumberPara = document.createElement('p');
+      // votedNumberPara.setAttribute('class', 'text-cah');
+      // const votedNumberText = document.createTextNode(obj.votes);
+      // votedNumberPara.appendChild(votedNumberText);
+      // findVotedCardByPlayerName.appendChild(votedNumberPara);
+      console.log('showing new voteTracker status...');
+      console.log(voteTracker);
     }
   }
 };

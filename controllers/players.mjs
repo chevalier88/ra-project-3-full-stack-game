@@ -16,12 +16,12 @@ export default function initPlayersController(db) {
         console.log(created); // The boolean indicating whether this instance was just created
         res.cookie('loggedIn', true);
         res.cookie('playerId', playerData.id);
-        res.send(`new player with ID ${playerData.id} created`);
+        res.send(`you're a new PLAYER with ID ${playerData.id}!`);
       } else {
         console.log('printing existing playerData...');
         res.cookie('loggedIn', true);
         res.cookie('playerId', playerData.id);
-        res.send(`existing player with ID ${playerData.id} logged in`);
+        res.send(`you're an existing PLAYER! Logged in with ID ${playerData.id}`);
       }
     }
     catch (error) {
