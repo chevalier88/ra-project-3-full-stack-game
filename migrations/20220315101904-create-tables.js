@@ -1,3 +1,5 @@
+const { DataTypes } = require('sequelize/types');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Create items and categories tables before the table that references them
@@ -71,6 +73,28 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+    await queryInterface.createTable('winners', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+      name: {
+        type: Sequelize.STRING,
+      },
+      gameId: {
+        type: DataTypes.INTEGER,
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+    });
   },
   down: async (queryInterface) => {
     // Drop tables with foreign key references first
@@ -80,6 +104,7 @@ module.exports = {
     await Promise.all([
       queryInterface.dropTable('players'),
       queryInterface.dropTable('games'),
+      queryInterface.dropTable('winners'),
     ]);
   },
 };

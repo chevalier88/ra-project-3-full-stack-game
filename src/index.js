@@ -245,10 +245,15 @@ ws.onmessage = function (e) {
       currentGame.roundWinners.push(message.name);
       console.log(currentGame.roundWinners);
       console.log('just printed current game to remind ourselves what is up!');
-      const data = currentGame;
+      const data = {
+        game_id: currentGame.id,
+        winner_name: message.name,
+      };
       // trying to post the updated winner into the back end
       if (isHost) {
         // push round winners somewhere
+        console.log(currentGame.roundWinners);
+        console.log(Object.keys(currentGame));
       }
     }
   }

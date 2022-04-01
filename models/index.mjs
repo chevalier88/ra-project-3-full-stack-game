@@ -5,6 +5,7 @@ import allConfig from '../config/config.js';
 // import models
 import initPlayerModel from './player.mjs';
 import initGameModel from './game.mjs';
+import initWinnerModel from './winners.mjs';
 
 const env = process.env.NODE_ENV || 'development';
 const config = allConfig[env];
@@ -34,6 +35,7 @@ else {
 
 db.Player = initPlayerModel(sequelize, Sequelize.DataTypes);
 db.Game = initGameModel(sequelize, Sequelize.DataTypes);
+db.Winner = initWinnerModel(sequelize.Sequelize.DataTypes);
 
 // in order for the many-to-many to work we must mention the join table here.
 db.Player.belongsToMany(db.Game, { through: 'games_players' });
